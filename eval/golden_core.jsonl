@@ -1,0 +1,50 @@
+{"id": "c001", "text": "Подскажите, какие сроки доставки по Москве?", "category": "faq", "expected_slugs": ["delivery-terms"]}
+{"id": "c002", "text": "Сколько стоит доставка в регионы?", "category": "faq", "expected_slugs": ["delivery-cost"]}
+{"id": "c003", "text": "Какие способы оплаты у вас доступны?", "category": "faq", "expected_slugs": ["payment-methods"]}
+{"id": "c004", "text": "Можно ли оплатить заказ при получении?", "category": "faq", "expected_slugs": ["payment-methods"]}
+{"id": "c005", "text": "Сколько дней заказ хранится в пункте выдачи?", "category": "faq", "expected_slugs": ["pickup-point-storage"]}
+{"id": "c006", "text": "Можно ли проверить товар до оплаты в пункте выдачи?", "category": "faq", "expected_slugs": ["pickup-point-check"]}
+{"id": "c007", "text": "Какие условия гарантии на технику?", "category": "faq", "expected_slugs": ["warranty-terms"]}
+{"id": "c008", "text": "Как восстановить пароль от личного кабинета?", "category": "faq", "expected_slugs": ["account-password-reset"]}
+{"id": "c009", "text": "Подскажите режим работы поддержки", "category": "faq", "expected_slugs": ["support-working-hours"]}
+{"id": "c010", "text": "Как получить документы для бухгалтерии по заказу?", "category": "faq", "expected_slugs": ["invoice-and-documents"]}
+{"id": "c011", "text": "Можно ли применить два промокода в одном заказе?", "category": "faq", "expected_slugs": ["promocode-rules"]}
+{"id": "c012", "text": "Где мой заказ? Оформил четыре дня назад, статус не меняется", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"]}
+{"id": "c013", "text": "Не приходит трек-номер, как отследить посылку?", "category": "order_status", "expected_slugs": ["order-tracking"]}
+{"id": "c014", "text": "Что значит статус «Готов к выдаче»?", "category": "order_status", "expected_slugs": ["order-status-meaning"]}
+{"id": "c015", "text": "Когда придёт заказ 1042315?", "category": "order_status", "expected_slugs": ["order-tracking", "delivery-terms"]}
+{"id": "c016", "text": "Хочу отменить заказ, он ещё не отправлен", "category": "order_status", "expected_slugs": ["order-cancel"]}
+{"id": "c017", "text": "Нужно изменить адрес доставки на другой дом", "category": "order_status", "expected_slugs": ["delivery-address-change"]}
+{"id": "c018", "text": "Заказ передан в доставку неделю назад и не двигается", "category": "order_status", "expected_slugs": ["order-tracking"]}
+{"id": "c019", "text": "Где посылка? Трек не отслеживается на сайте перевозчика", "category": "order_status", "expected_slugs": ["order-tracking"]}
+{"id": "c020", "text": "Пришла только часть заказа, второй коробки нет", "category": "complaint", "expected_slugs": ["order-partial-delivery"]}
+{"id": "c021", "text": "Курьер нахамил и бросил коробку у двери. Это безобразие", "category": "complaint", "expected_slugs": ["damaged-on-delivery"]}
+{"id": "c022", "text": "Пишу претензию: товар пришёл разбитым", "category": "complaint", "expected_slugs": ["damaged-on-delivery"]}
+{"id": "c023", "text": "Второй раз присылаете брак, я крайне недоволен", "category": "complaint", "expected_slugs": ["return-defective"]}
+{"id": "c024", "text": "Цена после оформления выросла, считаю это обманом", "category": "complaint", "expected_slugs": ["price-changed-after-order"]}
+{"id": "c025", "text": "Упаковка вскрыта, товар поцарапан. Требую разобраться", "category": "complaint", "expected_slugs": ["damaged-on-delivery"]}
+{"id": "c026", "text": "Отвратительный сервис: три обращения и ни одного ответа", "category": "complaint", "expected_slugs": ["support-working-hours"]}
+{"id": "c027", "text": "Хочу вернуть деньги за неподошедшую куртку", "category": "refund", "expected_slugs": ["return-policy", "refund-timeline"]}
+{"id": "c028", "text": "Оформите возврат средств, товар не подошёл по размеру", "category": "refund", "expected_slugs": ["return-policy"]}
+{"id": "c029", "text": "Когда вернутся деньги за отменённый заказ?", "category": "refund", "expected_slugs": ["refund-timeline"]}
+{"id": "c030", "text": "Верните деньги за бракованный чайник", "category": "refund", "expected_slugs": ["return-defective"]}
+{"id": "c031", "text": "Можно вернуть духи, если упаковка не вскрыта?", "category": "refund", "expected_slugs": ["return-non-returnable"]}
+{"id": "c032", "text": "Прошу возврат денег: товар ненадлежащего качества", "category": "refund", "expected_slugs": ["return-defective", "refund-timeline"]}
+{"id": "c033", "text": "Требую компенсацию и возврат оплаты за испорченный заказ", "category": "refund", "expected_slugs": ["refund-timeline"]}
+{"id": "c034", "text": "Приложение вылетает при открытии корзины", "category": "tech_issue", "expected_slugs": ["app-cart-empty", "app-crash-on-start"]}
+{"id": "c035", "text": "Не приходит SMS с кодом подтверждения", "category": "tech_issue", "expected_slugs": ["account-sms-not-received"]}
+{"id": "c036", "text": "Зависает экран оплаты, деньги не списываются", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"]}
+{"id": "c037", "text": "Промокод не применяется, пишет ошибку", "category": "tech_issue", "expected_slugs": ["promocode-not-working"]}
+{"id": "c038", "text": "Не работает сайт, при оформлении ошибка 500", "category": "tech_issue", "expected_slugs": ["site-search-not-working"]}
+{"id": "c039", "text": "Не приходят уведомления о статусе заказа в приложении", "category": "tech_issue", "expected_slugs": ["app-push-notifications"]}
+{"id": "c040", "text": "Не могу войти в личный кабинет, код не приходит", "category": "tech_issue", "expected_slugs": ["account-sms-not-received"]}
+{"id": "c041", "text": "Поиск не находит товар, хотя он есть в каталоге", "category": "tech_issue", "expected_slugs": ["site-search-not-working"]}
+{"id": "c042", "text": "Оплата не прошла, но деньги списались дважды", "category": "tech_issue", "expected_slugs": ["payment-double-charge", "payment-failed"]}
+{"id": "c043", "text": "Корзина пустая, хотя я добавлял товары вчера", "category": "tech_issue", "expected_slugs": ["app-cart-empty"]}
+{"id": "c044", "text": "Здравствуйте", "category": "unclassified", "ambiguous": true}
+{"id": "c045", "text": "???", "category": "unclassified", "ambiguous": true}
+{"id": "c046", "text": "Заказ пришёл, но в приложении ошибка и деньги списались дважды", "category": "tech_issue", "ambiguous": true, "expected_slugs": ["payment-double-charge"]}
+{"id": "c047", "text": "Хочу узнать про возврат, но сначала где мой заказ", "category": "order_status", "ambiguous": true, "expected_slugs": ["order-tracking", "return-policy"]}
+{"id": "c048", "text": "Не устраивает качество, что можно сделать?", "category": "complaint", "ambiguous": true, "expected_slugs": ["return-defective"]}
+{"id": "c049", "text": "Нужна помощь с заказом", "category": "unclassified", "ambiguous": true}
+{"id": "c050", "text": "Верните всё как было", "category": "unclassified", "ambiguous": true}

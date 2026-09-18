@@ -1,0 +1,359 @@
+{"id": "c001", "text": "Подскажите, какие сроки доставки по Москве?", "category": "faq", "expected_slugs": ["delivery-terms"]}
+{"id": "c002", "text": "Сколько стоит доставка в регионы?", "category": "faq", "expected_slugs": ["delivery-cost"]}
+{"id": "c003", "text": "Какие способы оплаты у вас доступны?", "category": "faq", "expected_slugs": ["payment-methods"]}
+{"id": "c004", "text": "Можно ли оплатить заказ при получении?", "category": "faq", "expected_slugs": ["payment-methods"]}
+{"id": "c005", "text": "Сколько дней заказ хранится в пункте выдачи?", "category": "faq", "expected_slugs": ["pickup-point-storage"]}
+{"id": "c006", "text": "Можно ли проверить товар до оплаты в пункте выдачи?", "category": "faq", "expected_slugs": ["pickup-point-check"]}
+{"id": "c007", "text": "Какие условия гарантии на технику?", "category": "faq", "expected_slugs": ["warranty-terms"]}
+{"id": "c008", "text": "Как восстановить пароль от личного кабинета?", "category": "faq", "expected_slugs": ["account-password-reset"]}
+{"id": "c009", "text": "Подскажите режим работы поддержки", "category": "faq", "expected_slugs": ["support-working-hours"]}
+{"id": "c010", "text": "Как получить документы для бухгалтерии по заказу?", "category": "faq", "expected_slugs": ["invoice-and-documents"]}
+{"id": "c011", "text": "Можно ли применить два промокода в одном заказе?", "category": "faq", "expected_slugs": ["promocode-rules"]}
+{"id": "c012", "text": "Где мой заказ? Оформил четыре дня назад, статус не меняется", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"]}
+{"id": "c013", "text": "Не приходит трек-номер, как отследить посылку?", "category": "order_status", "expected_slugs": ["order-tracking"]}
+{"id": "c014", "text": "Что значит статус «Готов к выдаче»?", "category": "order_status", "expected_slugs": ["order-status-meaning"]}
+{"id": "c015", "text": "Когда придёт заказ 1042315?", "category": "order_status", "expected_slugs": ["order-tracking", "delivery-terms"]}
+{"id": "c016", "text": "Хочу отменить заказ, он ещё не отправлен", "category": "order_status", "expected_slugs": ["order-cancel"]}
+{"id": "c017", "text": "Нужно изменить адрес доставки на другой дом", "category": "order_status", "expected_slugs": ["delivery-address-change"]}
+{"id": "c018", "text": "Заказ передан в доставку неделю назад и не двигается", "category": "order_status", "expected_slugs": ["order-tracking"]}
+{"id": "c019", "text": "Где посылка? Трек не отслеживается на сайте перевозчика", "category": "order_status", "expected_slugs": ["order-tracking"]}
+{"id": "c020", "text": "Пришла только часть заказа, второй коробки нет", "category": "complaint", "expected_slugs": ["order-partial-delivery"]}
+{"id": "c021", "text": "Курьер нахамил и бросил коробку у двери. Это безобразие", "category": "complaint", "expected_slugs": ["damaged-on-delivery"]}
+{"id": "c022", "text": "Пишу претензию: товар пришёл разбитым", "category": "complaint", "expected_slugs": ["damaged-on-delivery"]}
+{"id": "c023", "text": "Второй раз присылаете брак, я крайне недоволен", "category": "complaint", "expected_slugs": ["return-defective"]}
+{"id": "c024", "text": "Цена после оформления выросла, считаю это обманом", "category": "complaint", "expected_slugs": ["price-changed-after-order"]}
+{"id": "c025", "text": "Упаковка вскрыта, товар поцарапан. Требую разобраться", "category": "complaint", "expected_slugs": ["damaged-on-delivery"]}
+{"id": "c026", "text": "Отвратительный сервис: три обращения и ни одного ответа", "category": "complaint", "expected_slugs": ["support-working-hours"]}
+{"id": "c027", "text": "Хочу вернуть деньги за неподошедшую куртку", "category": "refund", "expected_slugs": ["return-policy", "refund-timeline"]}
+{"id": "c028", "text": "Оформите возврат средств, товар не подошёл по размеру", "category": "refund", "expected_slugs": ["return-policy"]}
+{"id": "c029", "text": "Когда вернутся деньги за отменённый заказ?", "category": "refund", "expected_slugs": ["refund-timeline"]}
+{"id": "c030", "text": "Верните деньги за бракованный чайник", "category": "refund", "expected_slugs": ["return-defective"]}
+{"id": "c031", "text": "Можно вернуть духи, если упаковка не вскрыта?", "category": "refund", "expected_slugs": ["return-non-returnable"]}
+{"id": "c032", "text": "Прошу возврат денег: товар ненадлежащего качества", "category": "refund", "expected_slugs": ["return-defective", "refund-timeline"]}
+{"id": "c033", "text": "Требую компенсацию и возврат оплаты за испорченный заказ", "category": "refund", "expected_slugs": ["refund-timeline"]}
+{"id": "c034", "text": "Приложение вылетает при открытии корзины", "category": "tech_issue", "expected_slugs": ["app-cart-empty", "app-crash-on-start"]}
+{"id": "c035", "text": "Не приходит SMS с кодом подтверждения", "category": "tech_issue", "expected_slugs": ["account-sms-not-received"]}
+{"id": "c036", "text": "Зависает экран оплаты, деньги не списываются", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"]}
+{"id": "c037", "text": "Промокод не применяется, пишет ошибку", "category": "tech_issue", "expected_slugs": ["promocode-not-working"]}
+{"id": "c038", "text": "Не работает сайт, при оформлении ошибка 500", "category": "tech_issue", "expected_slugs": ["site-search-not-working"]}
+{"id": "c039", "text": "Не приходят уведомления о статусе заказа в приложении", "category": "tech_issue", "expected_slugs": ["app-push-notifications"]}
+{"id": "c040", "text": "Не могу войти в личный кабинет, код не приходит", "category": "tech_issue", "expected_slugs": ["account-sms-not-received"]}
+{"id": "c041", "text": "Поиск не находит товар, хотя он есть в каталоге", "category": "tech_issue", "expected_slugs": ["site-search-not-working"]}
+{"id": "c042", "text": "Оплата не прошла, но деньги списались дважды", "category": "tech_issue", "expected_slugs": ["payment-double-charge", "payment-failed"]}
+{"id": "c043", "text": "Корзина пустая, хотя я добавлял товары вчера", "category": "tech_issue", "expected_slugs": ["app-cart-empty"]}
+{"id": "c044", "text": "Здравствуйте", "category": "unclassified", "ambiguous": true}
+{"id": "c045", "text": "???", "category": "unclassified", "ambiguous": true}
+{"id": "c046", "text": "Заказ пришёл, но в приложении ошибка и деньги списались дважды", "category": "tech_issue", "ambiguous": true, "expected_slugs": ["payment-double-charge"]}
+{"id": "c047", "text": "Хочу узнать про возврат, но сначала где мой заказ", "category": "order_status", "ambiguous": true, "expected_slugs": ["order-tracking", "return-policy"]}
+{"id": "c048", "text": "Не устраивает качество, что можно сделать?", "category": "complaint", "ambiguous": true, "expected_slugs": ["return-defective"]}
+{"id": "c049", "text": "Нужна помощь с заказом", "category": "unclassified", "ambiguous": true}
+{"id": "c050", "text": "Верните всё как было", "category": "unclassified", "ambiguous": true}
+{"id": "g0001", "text": "Хотел уточнить: действует ли промокод на товары со скидкой? Спасибо!", "category": "faq", "expected_slugs": ["promocode-rules"], "synthetic": true}
+{"id": "g0002", "text": "Подскажите, сколько хранится заказ в пункте выдачи? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["pickup-point-storage"], "synthetic": true}
+{"id": "g0003", "text": "Хотел уточнить: действует ли промокод на товары со скидкой? Обращаюсь второй раз.", "category": "faq", "expected_slugs": ["promocode-rules"], "synthetic": true}
+{"id": "g0004", "text": "Хотел уточнить: как восстановить пароль? Спасибо!", "category": "faq", "expected_slugs": ["account-password-reset"], "synthetic": true}
+{"id": "g0005", "text": "Подскажите, можно ли вернуть товар без чека? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["return-policy"], "synthetic": true}
+{"id": "g0006", "text": "Хотел уточнить: сколько стоит доставка курьером?", "category": "faq", "expected_slugs": ["delivery-cost"], "synthetic": true}
+{"id": "g0007", "text": "Добрый день! какая гарантия на бытовую технику?", "category": "faq", "expected_slugs": ["warranty-terms"], "synthetic": true}
+{"id": "g0008", "text": "Хотел уточнить: какая гарантия на бытовую технику? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["warranty-terms"], "synthetic": true}
+{"id": "g0009", "text": "как восстановить пароль? Заранее спасибо Жду ответа.", "category": "faq", "expected_slugs": ["account-password-reset"], "synthetic": true}
+{"id": "g0010", "text": "Добрый день! как восстановить пароль? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["account-password-reset"], "synthetic": true}
+{"id": "g0011", "text": "можно ли вернуть товар без чека? Заранее спасибо", "category": "faq", "expected_slugs": ["return-policy"], "synthetic": true}
+{"id": "g0012", "text": "Добрый день! какая гарантия на бытовую технику? Спасибо!", "category": "faq", "expected_slugs": ["warranty-terms"], "synthetic": true}
+{"id": "g0013", "text": "Добрый день! сколько стоит доставка курьером? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["delivery-cost"], "synthetic": true}
+{"id": "g0014", "text": "Хотел уточнить: какие условия бесплатной доставки? Жду ответа.", "category": "faq", "expected_slugs": ["delivery-cost"], "synthetic": true}
+{"id": "g0015", "text": "Подскажите, как получить чек на заказ? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["invoice-and-documents"], "synthetic": true}
+{"id": "g0016", "text": "Добрый день! можно ли оплатить через СБП? Жду ответа.", "category": "faq", "expected_slugs": ["payment-methods"], "synthetic": true}
+{"id": "g0017", "text": "Добрый день! можно ли проверить товар при получении?", "category": "faq", "expected_slugs": ["pickup-point-check"], "synthetic": true}
+{"id": "g0018", "text": "Добрый день! какие сроки доставки в Екатеринбург?", "category": "faq", "expected_slugs": ["delivery-terms"], "synthetic": true}
+{"id": "g0019", "text": "Добрый день! можно ли проверить товар при получении? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["pickup-point-check"], "synthetic": true}
+{"id": "g0020", "text": "Подскажите, какие сроки доставки в Екатеринбург? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["delivery-terms"], "synthetic": true}
+{"id": "g0021", "text": "Подскажите, сколько хранится заказ в пункте выдачи? Жду ответа.", "category": "faq", "expected_slugs": ["pickup-point-storage"], "synthetic": true}
+{"id": "g0022", "text": "Хотел уточнить: как изменить номер телефона в аккаунте? Спасибо!", "category": "faq", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0023", "text": "Подскажите, как оформить заказ на юридическое лицо? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["invoice-and-documents"], "synthetic": true}
+{"id": "g0024", "text": "Хотел уточнить: как оформить заказ на юридическое лицо? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["invoice-and-documents"], "synthetic": true}
+{"id": "g0025", "text": "Подскажите, какая гарантия на бытовую технику? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["warranty-terms"], "synthetic": true}
+{"id": "g0026", "text": "действует ли промокод на товары со скидкой? Заранее спасибо Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["promocode-rules"], "synthetic": true}
+{"id": "g0027", "text": "Подскажите, какая гарантия на бытовую технику? Жду ответа.", "category": "faq", "expected_slugs": ["warranty-terms"], "synthetic": true}
+{"id": "g0028", "text": "Добрый день! какие сроки доставки в Екатеринбург? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["delivery-terms"], "synthetic": true}
+{"id": "g0029", "text": "Хотел уточнить: как оформить заказ на юридическое лицо? Обращаюсь второй раз.", "category": "faq", "expected_slugs": ["invoice-and-documents"], "synthetic": true}
+{"id": "g0030", "text": "Хотел уточнить: можно ли забрать заказ в выходной? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["pickup-point-storage"], "synthetic": true}
+{"id": "g0031", "text": "сколько стоит доставка курьером? Заранее спасибо", "category": "faq", "expected_slugs": ["delivery-cost"], "synthetic": true}
+{"id": "g0032", "text": "Подскажите, можно ли забрать заказ в выходной? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["pickup-point-storage"], "synthetic": true}
+{"id": "g0033", "text": "можно ли вернуть товар без чека? Заранее спасибо Жду ответа.", "category": "faq", "expected_slugs": ["return-policy"], "synthetic": true}
+{"id": "g0034", "text": "Добрый день! как изменить номер телефона в аккаунте? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0035", "text": "Добрый день! можно ли проверить товар при получении? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["pickup-point-check"], "synthetic": true}
+{"id": "g0036", "text": "Добрый день! сколько хранится заказ в пункте выдачи? Жду ответа.", "category": "faq", "expected_slugs": ["pickup-point-storage"], "synthetic": true}
+{"id": "g0037", "text": "Хотел уточнить: можно ли оплатить через СБП? Спасибо!", "category": "faq", "expected_slugs": ["payment-methods"], "synthetic": true}
+{"id": "g0038", "text": "можно ли проверить товар при получении? Заранее спасибо Жду ответа.", "category": "faq", "expected_slugs": ["pickup-point-check"], "synthetic": true}
+{"id": "g0039", "text": "Добрый день! как восстановить пароль? Обращаюсь второй раз.", "category": "faq", "expected_slugs": ["account-password-reset"], "synthetic": true}
+{"id": "g0040", "text": "Хотел уточнить: можно ли забрать заказ в выходной? Жду ответа.", "category": "faq", "expected_slugs": ["pickup-point-storage"], "synthetic": true}
+{"id": "g0041", "text": "Добрый день! как получить чек на заказ? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["invoice-and-documents"], "synthetic": true}
+{"id": "g0042", "text": "Хотел уточнить: можно ли забрать заказ в выходной? Спасибо!", "category": "faq", "expected_slugs": ["pickup-point-storage"], "synthetic": true}
+{"id": "g0043", "text": "Подскажите, сколько стоит доставка курьером? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["delivery-cost"], "synthetic": true}
+{"id": "g0044", "text": "сколько стоит доставка курьером? Заранее спасибо Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["delivery-cost"], "synthetic": true}
+{"id": "g0045", "text": "Подскажите, какие сроки доставки в Екатеринбург?", "category": "faq", "expected_slugs": ["delivery-terms"], "synthetic": true}
+{"id": "g0046", "text": "Хотел уточнить: действует ли промокод на товары со скидкой? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["promocode-rules"], "synthetic": true}
+{"id": "g0047", "text": "Подскажите, как оформить заказ на юридическое лицо? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["invoice-and-documents"], "synthetic": true}
+{"id": "g0048", "text": "какая гарантия на бытовую технику? Заранее спасибо", "category": "faq", "expected_slugs": ["warranty-terms"], "synthetic": true}
+{"id": "g0049", "text": "Добрый день! какие сроки доставки в Екатеринбург? Жду ответа.", "category": "faq", "expected_slugs": ["delivery-terms"], "synthetic": true}
+{"id": "g0050", "text": "Добрый день! как оформить заказ на юридическое лицо? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["invoice-and-documents"], "synthetic": true}
+{"id": "g0051", "text": "Подскажите, как изменить номер телефона в аккаунте? Жду ответа.", "category": "faq", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0052", "text": "Хотел уточнить: как изменить номер телефона в аккаунте? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0053", "text": "Хотел уточнить: сколько стоит доставка курьером? Жду ответа.", "category": "faq", "expected_slugs": ["delivery-cost"], "synthetic": true}
+{"id": "g0054", "text": "как получить чек на заказ? Заранее спасибо Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["invoice-and-documents"], "synthetic": true}
+{"id": "g0055", "text": "Добрый день! сколько стоит доставка курьером?", "category": "faq", "expected_slugs": ["delivery-cost"], "synthetic": true}
+{"id": "g0056", "text": "Добрый день! как изменить номер телефона в аккаунте?", "category": "faq", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0057", "text": "Хотел уточнить: сколько стоит доставка курьером? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["delivery-cost"], "synthetic": true}
+{"id": "g0058", "text": "Добрый день! как получить чек на заказ? Обращаюсь второй раз.", "category": "faq", "expected_slugs": ["invoice-and-documents"], "synthetic": true}
+{"id": "g0059", "text": "Добрый день! как восстановить пароль? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["account-password-reset"], "synthetic": true}
+{"id": "g0060", "text": "Добрый день! какая гарантия на бытовую технику? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["warranty-terms"], "synthetic": true}
+{"id": "g0061", "text": "Добрый день! действует ли промокод на товары со скидкой?", "category": "faq", "expected_slugs": ["promocode-rules"], "synthetic": true}
+{"id": "g0062", "text": "Подскажите, как восстановить пароль? Спасибо!", "category": "faq", "expected_slugs": ["account-password-reset"], "synthetic": true}
+{"id": "g0063", "text": "Хотел уточнить: как получить чек на заказ?", "category": "faq", "expected_slugs": ["invoice-and-documents"], "synthetic": true}
+{"id": "g0064", "text": "Хотел уточнить: какие сроки доставки в Екатеринбург? Обращаюсь второй раз.", "category": "faq", "expected_slugs": ["delivery-terms"], "synthetic": true}
+{"id": "g0065", "text": "Добрый день! действует ли промокод на товары со скидкой? Обращаюсь второй раз.", "category": "faq", "expected_slugs": ["promocode-rules"], "synthetic": true}
+{"id": "g0066", "text": "Подскажите, можно ли оплатить через СБП?", "category": "faq", "expected_slugs": ["payment-methods"], "synthetic": true}
+{"id": "g0067", "text": "Хотел уточнить: сколько хранится заказ в пункте выдачи? Обращаюсь второй раз.", "category": "faq", "expected_slugs": ["pickup-point-storage"], "synthetic": true}
+{"id": "g0068", "text": "Добрый день! действует ли промокод на товары со скидкой? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["promocode-rules"], "synthetic": true}
+{"id": "g0069", "text": "Добрый день! можно ли вернуть товар без чека? Жду ответа.", "category": "faq", "expected_slugs": ["return-policy"], "synthetic": true}
+{"id": "g0070", "text": "Подскажите, можно ли оплатить через СБП? Спасибо!", "category": "faq", "expected_slugs": ["payment-methods"], "synthetic": true}
+{"id": "g0071", "text": "Подскажите, какая гарантия на бытовую технику? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["warranty-terms"], "synthetic": true}
+{"id": "g0072", "text": "Добрый день! сколько стоит доставка курьером? Обращаюсь второй раз.", "category": "faq", "expected_slugs": ["delivery-cost"], "synthetic": true}
+{"id": "g0073", "text": "Хотел уточнить: можно ли проверить товар при получении? Жду ответа.", "category": "faq", "expected_slugs": ["pickup-point-check"], "synthetic": true}
+{"id": "g0074", "text": "можно ли забрать заказ в выходной? Заранее спасибо Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["pickup-point-storage"], "synthetic": true}
+{"id": "g0075", "text": "Добрый день! какие условия бесплатной доставки? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["delivery-cost"], "synthetic": true}
+{"id": "g0076", "text": "Хотел уточнить: как восстановить пароль? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["account-password-reset"], "synthetic": true}
+{"id": "g0077", "text": "как восстановить пароль? Заранее спасибо Обращаюсь второй раз.", "category": "faq", "expected_slugs": ["account-password-reset"], "synthetic": true}
+{"id": "g0078", "text": "действует ли промокод на товары со скидкой? Заранее спасибо Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["promocode-rules"], "synthetic": true}
+{"id": "g0079", "text": "Хотел уточнить: можно ли оплатить через СБП? Жду ответа.", "category": "faq", "expected_slugs": ["payment-methods"], "synthetic": true}
+{"id": "g0080", "text": "Подскажите, можно ли оплатить через СБП? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["payment-methods"], "synthetic": true}
+{"id": "g0081", "text": "можно ли оплатить через СБП? Заранее спасибо Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["payment-methods"], "synthetic": true}
+{"id": "g0082", "text": "Хотел уточнить: как изменить номер телефона в аккаунте? Обращаюсь второй раз.", "category": "faq", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0083", "text": "Добрый день! можно ли забрать заказ в выходной? Обращаюсь второй раз.", "category": "faq", "expected_slugs": ["pickup-point-storage"], "synthetic": true}
+{"id": "g0084", "text": "Подскажите, какие сроки доставки в Екатеринбург? Обращаюсь второй раз.", "category": "faq", "expected_slugs": ["delivery-terms"], "synthetic": true}
+{"id": "g0085", "text": "Хотел уточнить: сколько хранится заказ в пункте выдачи? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["pickup-point-storage"], "synthetic": true}
+{"id": "g0086", "text": "Подскажите, сколько хранится заказ в пункте выдачи? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["pickup-point-storage"], "synthetic": true}
+{"id": "g0087", "text": "Подскажите, можно ли оплатить через СБП? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["payment-methods"], "synthetic": true}
+{"id": "g0088", "text": "Хотел уточнить: можно ли оплатить через СБП? Ответьте, пожалуйста, поскорее.", "category": "faq", "expected_slugs": ["payment-methods"], "synthetic": true}
+{"id": "g0089", "text": "какие сроки доставки в Екатеринбург? Заранее спасибо Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["delivery-terms"], "synthetic": true}
+{"id": "g0090", "text": "Хотел уточнить: можно ли вернуть товар без чека? Обращаюсь второй раз.", "category": "faq", "expected_slugs": ["return-policy"], "synthetic": true}
+{"id": "g0091", "text": "Хотел уточнить: как оформить заказ на юридическое лицо? Заказ оформлен через приложение.", "category": "faq", "expected_slugs": ["invoice-and-documents"], "synthetic": true}
+{"id": "g0092", "text": "Заказ 1150022 висит в одном статусе. Оформлял пять дней назад. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0093", "text": "Где мой заказ 1150022? Курьер не выходит на связь. Спасибо!", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0094", "text": "Когда доставят заказ 1200341? Пункт выдачи говорит, что посылка не поступала.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0095", "text": "Заказ 1042315 висит в одном статусе. Перевозчик молчит. Обращаюсь второй раз.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0096", "text": "Не могу отследить посылку по заказу 1042315. Оформлял пять дней назад.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0097", "text": "Не могу отследить посылку по заказу 1078654. Оплата прошла, подтверждение пришло. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0098", "text": "Не могу отследить посылку по заказу 1042315. Перевозчик молчит. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0099", "text": "Где мой заказ 1042315? Пункт выдачи говорит, что посылка не поступала. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0100", "text": "Не могу отследить посылку по заказу 1023456. Перевозчик молчит.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0101", "text": "Когда доставят заказ 998877? Оплата прошла, подтверждение пришло. Обращаюсь второй раз.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0102", "text": "Где мой заказ 998877? Оплата прошла, подтверждение пришло.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0103", "text": "Когда доставят заказ 1078654? В личном кабинете статус не обновляется. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0104", "text": "Заказ 1200341 висит в одном статусе. В личном кабинете статус не обновляется. Спасибо!", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0105", "text": "Не могу отследить посылку по заказу 1023456. В личном кабинете статус не обновляется. Заказ оформлен через приложение.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0106", "text": "Заказ 998877 висит в одном статусе. Деньги списаны, заказ не двигается. Спасибо!", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0107", "text": "Не могу отследить посылку по заказу 998877. Оформлял пять дней назад.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0108", "text": "Заказ 1042315 висит в одном статусе. Оплата прошла, подтверждение пришло. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0109", "text": "Где мой заказ 1200341? Оплата прошла, подтверждение пришло. Обращаюсь второй раз.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0110", "text": "Когда доставят заказ 1200341? Деньги списаны, заказ не двигается. Обращаюсь второй раз.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0111", "text": "Не могу отследить посылку по заказу 998877. В личном кабинете статус не обновляется. Заказ оформлен через приложение.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0112", "text": "Заказ 1150022 висит в одном статусе. Оплата прошла, подтверждение пришло. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0113", "text": "Где мой заказ 998877? Пункт выдачи говорит, что посылка не поступала. Заказ оформлен через приложение.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0114", "text": "Заказ 998877 висит в одном статусе. Оформлял пять дней назад. Обращаюсь второй раз.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0115", "text": "Когда доставят заказ 1200341? Перевозчик молчит. Спасибо!", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0116", "text": "Не могу отследить посылку по заказу 1150022. Курьер не выходит на связь. Спасибо!", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0117", "text": "Не могу отследить посылку по заказу 1200341. Оплата прошла, подтверждение пришло. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0118", "text": "Когда доставят заказ 1200341? Курьер не выходит на связь. Обращаюсь второй раз.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0119", "text": "Заказ 1150022 висит в одном статусе. Обещали доставку вчера. Обращаюсь второй раз.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0120", "text": "Когда доставят заказ 998877? Обещали доставку вчера. Обращаюсь второй раз.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0121", "text": "Заказ 1042315 висит в одном статусе. Пункт выдачи говорит, что посылка не поступала. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0122", "text": "Не могу отследить посылку по заказу 1023456. Обещали доставку вчера. Заказ оформлен через приложение.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0123", "text": "Когда доставят заказ 1200341? В личном кабинете статус не обновляется. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0124", "text": "Где мой заказ 1200341? Оформлял пять дней назад. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0125", "text": "Где мой заказ 1200341? Деньги списаны, заказ не двигается. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0126", "text": "Заказ 1200341 висит в одном статусе. Курьер не выходит на связь. Обращаюсь второй раз.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0127", "text": "Где мой заказ 1023456? Обещали доставку вчера.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0128", "text": "Когда доставят заказ 1023456? Оплата прошла, подтверждение пришло. Спасибо!", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0129", "text": "Где мой заказ 1042315? Деньги списаны, заказ не двигается. Спасибо!", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0130", "text": "Заказ 1200341 висит в одном статусе. Деньги списаны, заказ не двигается. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0131", "text": "Заказ 1200341 висит в одном статусе. Деньги списаны, заказ не двигается. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0132", "text": "Где мой заказ 1150022? Перевозчик молчит. Спасибо!", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0133", "text": "Где мой заказ 1200341? Оплата прошла, подтверждение пришло. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0134", "text": "Где мой заказ 1042315? Перевозчик молчит. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0135", "text": "Заказ 1042315 висит в одном статусе. Курьер не выходит на связь. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0136", "text": "Заказ 1150022 висит в одном статусе. Деньги списаны, заказ не двигается. Спасибо!", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0137", "text": "Заказ 1078654 висит в одном статусе. Оплата прошла, подтверждение пришло. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0138", "text": "Заказ 1150022 висит в одном статусе. Деньги списаны, заказ не двигается. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0139", "text": "Заказ 1200341 висит в одном статусе. Пункт выдачи говорит, что посылка не поступала. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0140", "text": "Где мой заказ 1042315? Оплата прошла, подтверждение пришло. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0141", "text": "Не могу отследить посылку по заказу 1023456. Оплата прошла, подтверждение пришло. Заказ оформлен через приложение.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0142", "text": "Не могу отследить посылку по заказу 1042315. Оплата прошла, подтверждение пришло. Спасибо!", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0143", "text": "Заказ 1023456 висит в одном статусе. Пункт выдачи говорит, что посылка не поступала. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0144", "text": "Заказ 1023456 висит в одном статусе. Курьер не выходит на связь. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0145", "text": "Не могу отследить посылку по заказу 1150022. Обещали доставку вчера. Обращаюсь второй раз.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0146", "text": "Где мой заказ 1200341? Курьер не выходит на связь. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0147", "text": "Не могу отследить посылку по заказу 1150022. Перевозчик молчит. Спасибо!", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0148", "text": "Когда доставят заказ 1200341? Курьер не выходит на связь. Спасибо!", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0149", "text": "Где мой заказ 1023456? Обещали доставку вчера. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0150", "text": "Заказ 1078654 висит в одном статусе. Пункт выдачи говорит, что посылка не поступала. Спасибо!", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0151", "text": "Заказ 1200341 висит в одном статусе. Курьер не выходит на связь.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0152", "text": "Когда доставят заказ 1200341? Оплата прошла, подтверждение пришло. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0153", "text": "Заказ 1078654 висит в одном статусе. Оформлял пять дней назад. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0154", "text": "Когда доставят заказ 1200341? В личном кабинете статус не обновляется. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0155", "text": "Заказ 1042315 висит в одном статусе. Обещали доставку вчера. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0156", "text": "Где мой заказ 1042315? Перевозчик молчит. Обращаюсь второй раз.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0157", "text": "Заказ 1023456 висит в одном статусе. Деньги списаны, заказ не двигается.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0158", "text": "Когда доставят заказ 998877? Обещали доставку вчера.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0159", "text": "Не могу отследить посылку по заказу 1150022. Обещали доставку вчера. Заказ оформлен через приложение.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0160", "text": "Где мой заказ 998877? В личном кабинете статус не обновляется. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0161", "text": "Не могу отследить посылку по заказу 1042315. Деньги списаны, заказ не двигается. Заказ оформлен через приложение.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0162", "text": "Когда доставят заказ 1042315? Пункт выдачи говорит, что посылка не поступала. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0163", "text": "Не могу отследить посылку по заказу 1200341. В личном кабинете статус не обновляется. Жду ответа.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0164", "text": "Не могу отследить посылку по заказу 1150022. Курьер не выходит на связь. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0165", "text": "Где мой заказ 1023456? Деньги списаны, заказ не двигается. Ответьте, пожалуйста, поскорее.", "category": "order_status", "expected_slugs": ["order-status-meaning", "order-tracking"], "synthetic": true}
+{"id": "g0166", "text": "оплата не прошла, а деньги списались Помогите разобраться Заказ оформлен через приложение.", "category": "tech_issue", "expected_slugs": ["payment-failed"], "synthetic": true}
+{"id": "g0167", "text": "корзина очищается сама при перезапуске Что делать? Обращаюсь второй раз.", "category": "tech_issue", "expected_slugs": ["app-cart-empty"], "synthetic": true}
+{"id": "g0168", "text": "кнопка оплаты не нажимается Что делать? Обращаюсь второй раз.", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"], "synthetic": true}
+{"id": "g0169", "text": "кнопка оплаты не нажимается Что делать? Заказ оформлен через приложение.", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"], "synthetic": true}
+{"id": "g0170", "text": "приложение вылетает при открытии корзины Помогите разобраться Заказ оформлен через приложение.", "category": "tech_issue", "expected_slugs": ["app-cart-empty", "app-crash-on-start"], "synthetic": true}
+{"id": "g0171", "text": "Второй день не могу войти в личный кабинет", "category": "tech_issue", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0172", "text": "зависает экран оплаты Помогите разобраться", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"], "synthetic": true}
+{"id": "g0173", "text": "кнопка оплаты не нажимается Помогите разобраться Жду ответа.", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"], "synthetic": true}
+{"id": "g0174", "text": "У меня приложение зависает на экране загрузки Обращаюсь второй раз.", "category": "tech_issue", "expected_slugs": ["app-crash-on-start"], "synthetic": true}
+{"id": "g0175", "text": "У меня промокод не применяется, пишет ошибку", "category": "tech_issue", "expected_slugs": ["promocode-not-working"], "synthetic": true}
+{"id": "g0176", "text": "У меня деньги списались дважды за один заказ Ответьте, пожалуйста, поскорее.", "category": "tech_issue", "expected_slugs": ["payment-double-charge"], "synthetic": true}
+{"id": "g0177", "text": "не приходит SMS с кодом подтверждения Помогите разобраться", "category": "tech_issue", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0178", "text": "У меня деньги списались дважды за один заказ Обращаюсь второй раз.", "category": "tech_issue", "expected_slugs": ["payment-double-charge"], "synthetic": true}
+{"id": "g0179", "text": "Второй день деньги списались дважды за один заказ Жду ответа.", "category": "tech_issue", "expected_slugs": ["payment-double-charge"], "synthetic": true}
+{"id": "g0180", "text": "Второй день корзина очищается сама при перезапуске", "category": "tech_issue", "expected_slugs": ["app-cart-empty"], "synthetic": true}
+{"id": "g0181", "text": "Второй день не могу войти в личный кабинет Заказ оформлен через приложение.", "category": "tech_issue", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0182", "text": "не могу войти в личный кабинет Помогите разобраться Обращаюсь второй раз.", "category": "tech_issue", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0183", "text": "промокод не применяется, пишет ошибку Что делать? Ответьте, пожалуйста, поскорее.", "category": "tech_issue", "expected_slugs": ["promocode-not-working"], "synthetic": true}
+{"id": "g0184", "text": "корзина очищается сама при перезапуске Помогите разобраться Ответьте, пожалуйста, поскорее.", "category": "tech_issue", "expected_slugs": ["app-cart-empty"], "synthetic": true}
+{"id": "g0185", "text": "Второй день промокод не применяется, пишет ошибку Спасибо!", "category": "tech_issue", "expected_slugs": ["promocode-not-working"], "synthetic": true}
+{"id": "g0186", "text": "корзина очищается сама при перезапуске Помогите разобраться", "category": "tech_issue", "expected_slugs": ["app-cart-empty"], "synthetic": true}
+{"id": "g0187", "text": "У меня приложение вылетает при открытии корзины Жду ответа.", "category": "tech_issue", "expected_slugs": ["app-cart-empty", "app-crash-on-start"], "synthetic": true}
+{"id": "g0188", "text": "У меня приложение зависает на экране загрузки Ответьте, пожалуйста, поскорее.", "category": "tech_issue", "expected_slugs": ["app-crash-on-start"], "synthetic": true}
+{"id": "g0189", "text": "кнопка оплаты не нажимается Что делать? Спасибо!", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"], "synthetic": true}
+{"id": "g0190", "text": "не работает поиск по каталогу Что делать? Жду ответа.", "category": "tech_issue", "expected_slugs": ["site-search-not-working"], "synthetic": true}
+{"id": "g0191", "text": "Второй день приложение вылетает при открытии корзины Спасибо!", "category": "tech_issue", "expected_slugs": ["app-cart-empty", "app-crash-on-start"], "synthetic": true}
+{"id": "g0192", "text": "Второй день корзина очищается сама при перезапуске Заказ оформлен через приложение.", "category": "tech_issue", "expected_slugs": ["app-cart-empty"], "synthetic": true}
+{"id": "g0193", "text": "Второй день приложение вылетает при открытии корзины Ответьте, пожалуйста, поскорее.", "category": "tech_issue", "expected_slugs": ["app-cart-empty", "app-crash-on-start"], "synthetic": true}
+{"id": "g0194", "text": "Второй день приложение зависает на экране загрузки Ответьте, пожалуйста, поскорее.", "category": "tech_issue", "expected_slugs": ["app-crash-on-start"], "synthetic": true}
+{"id": "g0195", "text": "У меня не могу войти в личный кабинет Спасибо!", "category": "tech_issue", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0196", "text": "корзина очищается сама при перезапуске Что делать? Ответьте, пожалуйста, поскорее.", "category": "tech_issue", "expected_slugs": ["app-cart-empty"], "synthetic": true}
+{"id": "g0197", "text": "не могу войти в личный кабинет Помогите разобраться Спасибо!", "category": "tech_issue", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0198", "text": "корзина очищается сама при перезапуске Что делать? Жду ответа.", "category": "tech_issue", "expected_slugs": ["app-cart-empty"], "synthetic": true}
+{"id": "g0199", "text": "кнопка оплаты не нажимается Помогите разобраться Обращаюсь второй раз.", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"], "synthetic": true}
+{"id": "g0200", "text": "не работает поиск по каталогу Помогите разобраться Ответьте, пожалуйста, поскорее.", "category": "tech_issue", "expected_slugs": ["site-search-not-working"], "synthetic": true}
+{"id": "g0201", "text": "Второй день корзина очищается сама при перезапуске Спасибо!", "category": "tech_issue", "expected_slugs": ["app-cart-empty"], "synthetic": true}
+{"id": "g0202", "text": "зависает экран оплаты Помогите разобраться Спасибо!", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"], "synthetic": true}
+{"id": "g0203", "text": "не работает поиск по каталогу Помогите разобраться Жду ответа.", "category": "tech_issue", "expected_slugs": ["site-search-not-working"], "synthetic": true}
+{"id": "g0204", "text": "У меня не могу войти в личный кабинет Обращаюсь второй раз.", "category": "tech_issue", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0205", "text": "У меня не могу войти в личный кабинет Заказ оформлен через приложение.", "category": "tech_issue", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0206", "text": "не приходят уведомления о заказе Что делать? Обращаюсь второй раз.", "category": "tech_issue", "expected_slugs": ["app-push-notifications"], "synthetic": true}
+{"id": "g0207", "text": "не приходит SMS с кодом подтверждения Что делать? Обращаюсь второй раз.", "category": "tech_issue", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0208", "text": "кнопка оплаты не нажимается Что делать?", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"], "synthetic": true}
+{"id": "g0209", "text": "Второй день корзина очищается сама при перезапуске Обращаюсь второй раз.", "category": "tech_issue", "expected_slugs": ["app-cart-empty"], "synthetic": true}
+{"id": "g0210", "text": "У меня не приходит SMS с кодом подтверждения", "category": "tech_issue", "expected_slugs": ["account-sms-not-received"], "synthetic": true}
+{"id": "g0211", "text": "оплата не прошла, а деньги списались Что делать? Жду ответа.", "category": "tech_issue", "expected_slugs": ["payment-failed"], "synthetic": true}
+{"id": "g0212", "text": "У меня зависает экран оплаты", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"], "synthetic": true}
+{"id": "g0213", "text": "Второй день кнопка оплаты не нажимается Обращаюсь второй раз.", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"], "synthetic": true}
+{"id": "g0214", "text": "Второй день не приходят уведомления о заказе Спасибо!", "category": "tech_issue", "expected_slugs": ["app-push-notifications"], "synthetic": true}
+{"id": "g0215", "text": "деньги списались дважды за один заказ Что делать? Спасибо!", "category": "tech_issue", "expected_slugs": ["payment-double-charge"], "synthetic": true}
+{"id": "g0216", "text": "кнопка оплаты не нажимается Помогите разобраться Ответьте, пожалуйста, поскорее.", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"], "synthetic": true}
+{"id": "g0217", "text": "корзина очищается сама при перезапуске Помогите разобраться Обращаюсь второй раз.", "category": "tech_issue", "expected_slugs": ["app-cart-empty"], "synthetic": true}
+{"id": "g0218", "text": "Второй день зависает экран оплаты Обращаюсь второй раз.", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"], "synthetic": true}
+{"id": "g0219", "text": "Второй день промокод не применяется, пишет ошибку Ответьте, пожалуйста, поскорее.", "category": "tech_issue", "expected_slugs": ["promocode-not-working"], "synthetic": true}
+{"id": "g0220", "text": "У меня кнопка оплаты не нажимается", "category": "tech_issue", "expected_slugs": ["app-payment-screen-freeze"], "synthetic": true}
+{"id": "g0221", "text": "не приходят уведомления о заказе Что делать? Спасибо!", "category": "tech_issue", "expected_slugs": ["app-push-notifications"], "synthetic": true}
+{"id": "g0222", "text": "Второй день приложение вылетает при открытии корзины Жду ответа.", "category": "tech_issue", "expected_slugs": ["app-cart-empty", "app-crash-on-start"], "synthetic": true}
+{"id": "g0223", "text": "У меня промокод не применяется, пишет ошибку Обращаюсь второй раз.", "category": "tech_issue", "expected_slugs": ["promocode-not-working"], "synthetic": true}
+{"id": "g0224", "text": "У меня промокод не применяется, пишет ошибку Заказ оформлен через приложение.", "category": "tech_issue", "expected_slugs": ["promocode-not-working"], "synthetic": true}
+{"id": "g0225", "text": "прислали не тот цвет и отказались менять Считаю это недопустимым Обращаюсь второй раз.", "category": "complaint", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0226", "text": "часть заказа не приехала, а в статусе всё доставлено Считаю это недопустимым", "category": "complaint", "expected_slugs": ["order-partial-delivery"], "synthetic": true}
+{"id": "g0227", "text": "товар пришёл с трещиной на корпусе Требую разобраться Жду ответа.", "category": "complaint", "expected_slugs": ["damaged-on-delivery"], "synthetic": true}
+{"id": "g0228", "text": "Жалоба: цена выросла уже после оформления", "category": "complaint", "expected_slugs": ["price-changed-after-order"], "synthetic": true}
+{"id": "g0229", "text": "товар явно был в употреблении Считаю это недопустимым Заказ оформлен через приложение.", "category": "complaint", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0230", "text": "Жалоба: коробка была вскрыта, часть вложения отсутствует Жду ответа.", "category": "complaint", "expected_slugs": ["order-partial-delivery"], "synthetic": true}
+{"id": "g0231", "text": "коробка была вскрыта, часть вложения отсутствует Считаю это недопустимым Ответьте, пожалуйста, поскорее.", "category": "complaint", "expected_slugs": ["order-partial-delivery"], "synthetic": true}
+{"id": "g0232", "text": "Пишу претензию: прислали не тот цвет и отказались менять", "category": "complaint", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0233", "text": "Пишу претензию: цена выросла уже после оформления Спасибо!", "category": "complaint", "expected_slugs": ["price-changed-after-order"], "synthetic": true}
+{"id": "g0234", "text": "курьер нахамил и не дождался проверки Считаю это недопустимым", "category": "complaint", "expected_slugs": ["damaged-on-delivery"], "synthetic": true}
+{"id": "g0235", "text": "третье обращение остаётся без ответа Требую разобраться Ответьте, пожалуйста, поскорее.", "category": "complaint", "expected_slugs": ["support-working-hours"], "synthetic": true}
+{"id": "g0236", "text": "Пишу претензию: прислали не тот цвет и отказались менять Ответьте, пожалуйста, поскорее.", "category": "complaint", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0237", "text": "коробка была вскрыта, часть вложения отсутствует Считаю это недопустимым Жду ответа.", "category": "complaint", "expected_slugs": ["order-partial-delivery"], "synthetic": true}
+{"id": "g0238", "text": "Пишу претензию: курьер нахамил и не дождался проверки Ответьте, пожалуйста, поскорее.", "category": "complaint", "expected_slugs": ["damaged-on-delivery"], "synthetic": true}
+{"id": "g0239", "text": "Жалоба: прислали не тот цвет и отказались менять Обращаюсь второй раз.", "category": "complaint", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0240", "text": "доставку переносили четыре раза без предупреждения Требую разобраться Спасибо!", "category": "complaint", "expected_slugs": ["delivery-terms"], "synthetic": true}
+{"id": "g0241", "text": "коробка была вскрыта, часть вложения отсутствует Требую разобраться Обращаюсь второй раз.", "category": "complaint", "expected_slugs": ["order-partial-delivery"], "synthetic": true}
+{"id": "g0242", "text": "заявленная комплектация не соответствует реальной Считаю это недопустимым Спасибо!", "category": "complaint", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0243", "text": "третье обращение остаётся без ответа Требую разобраться Спасибо!", "category": "complaint", "expected_slugs": ["support-working-hours"], "synthetic": true}
+{"id": "g0244", "text": "курьер нахамил и не дождался проверки Считаю это недопустимым Спасибо!", "category": "complaint", "expected_slugs": ["damaged-on-delivery"], "synthetic": true}
+{"id": "g0245", "text": "заявленная комплектация не соответствует реальной Требую разобраться Заказ оформлен через приложение.", "category": "complaint", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0246", "text": "Пишу претензию: товар пришёл с трещиной на корпусе Спасибо!", "category": "complaint", "expected_slugs": ["damaged-on-delivery"], "synthetic": true}
+{"id": "g0247", "text": "Жалоба: товар пришёл с трещиной на корпусе Ответьте, пожалуйста, поскорее.", "category": "complaint", "expected_slugs": ["damaged-on-delivery"], "synthetic": true}
+{"id": "g0248", "text": "Жалоба: коробка была вскрыта, часть вложения отсутствует Заказ оформлен через приложение.", "category": "complaint", "expected_slugs": ["order-partial-delivery"], "synthetic": true}
+{"id": "g0249", "text": "Жалоба: цена выросла уже после оформления Жду ответа.", "category": "complaint", "expected_slugs": ["price-changed-after-order"], "synthetic": true}
+{"id": "g0250", "text": "доставку переносили четыре раза без предупреждения Требую разобраться", "category": "complaint", "expected_slugs": ["delivery-terms"], "synthetic": true}
+{"id": "g0251", "text": "прислали не тот цвет и отказались менять Считаю это недопустимым Жду ответа.", "category": "complaint", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0252", "text": "Жалоба: часть заказа не приехала, а в статусе всё доставлено Спасибо!", "category": "complaint", "expected_slugs": ["order-partial-delivery"], "synthetic": true}
+{"id": "g0253", "text": "Пишу претензию: товар явно был в употреблении Заказ оформлен через приложение.", "category": "complaint", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0254", "text": "коробка была вскрыта, часть вложения отсутствует Считаю это недопустимым Заказ оформлен через приложение.", "category": "complaint", "expected_slugs": ["order-partial-delivery"], "synthetic": true}
+{"id": "g0255", "text": "Жалоба: коробка была вскрыта, часть вложения отсутствует Ответьте, пожалуйста, поскорее.", "category": "complaint", "expected_slugs": ["order-partial-delivery"], "synthetic": true}
+{"id": "g0256", "text": "цена выросла уже после оформления Требую разобраться Жду ответа.", "category": "complaint", "expected_slugs": ["price-changed-after-order"], "synthetic": true}
+{"id": "g0257", "text": "Пишу претензию: курьер нахамил и не дождался проверки", "category": "complaint", "expected_slugs": ["damaged-on-delivery"], "synthetic": true}
+{"id": "g0258", "text": "цена выросла уже после оформления Считаю это недопустимым Обращаюсь второй раз.", "category": "complaint", "expected_slugs": ["price-changed-after-order"], "synthetic": true}
+{"id": "g0259", "text": "Жалоба: заявленная комплектация не соответствует реальной Ответьте, пожалуйста, поскорее.", "category": "complaint", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0260", "text": "товар явно был в употреблении Требую разобраться Ответьте, пожалуйста, поскорее.", "category": "complaint", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0261", "text": "Жалоба: третье обращение остаётся без ответа Обращаюсь второй раз.", "category": "complaint", "expected_slugs": ["support-working-hours"], "synthetic": true}
+{"id": "g0262", "text": "доставку переносили четыре раза без предупреждения Требую разобраться Заказ оформлен через приложение.", "category": "complaint", "expected_slugs": ["delivery-terms"], "synthetic": true}
+{"id": "g0263", "text": "прислали не тот цвет и отказались менять Требую разобраться Ответьте, пожалуйста, поскорее.", "category": "complaint", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0264", "text": "цена выросла уже после оформления Требую разобраться Обращаюсь второй раз.", "category": "complaint", "expected_slugs": ["price-changed-after-order"], "synthetic": true}
+{"id": "g0265", "text": "товар явно был в употреблении Считаю это недопустимым", "category": "complaint", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0266", "text": "коробка была вскрыта, часть вложения отсутствует Считаю это недопустимым Обращаюсь второй раз.", "category": "complaint", "expected_slugs": ["order-partial-delivery"], "synthetic": true}
+{"id": "g0267", "text": "Верните оплату, духи оказались не тем ароматом", "category": "refund", "expected_slugs": ["return-non-returnable"], "synthetic": true}
+{"id": "g0268", "text": "Оформите возврат средств, товар не подошёл по размеру Спасибо!", "category": "refund", "expected_slugs": ["return-policy"], "synthetic": true}
+{"id": "g0269", "text": "Оформите возврат средств, духи оказались не тем ароматом", "category": "refund", "expected_slugs": ["return-non-returnable"], "synthetic": true}
+{"id": "g0270", "text": "Прошу возврат денег за заказ 1042315, устройство не включается", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0271", "text": "Оформите возврат средств, деньги за отмену так и не пришли Обращаюсь второй раз.", "category": "refund", "expected_slugs": ["refund-timeline"], "synthetic": true}
+{"id": "g0272", "text": "Верните оплату, заказ отменён складом Обращаюсь второй раз.", "category": "refund", "expected_slugs": ["order-cancel", "refund-timeline"], "synthetic": true}
+{"id": "g0273", "text": "Прошу возврат денег за заказ 1023456, устройство не включается Обращаюсь второй раз.", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0274", "text": "Хочу вернуть деньги: доставили не тот товар Заказ оформлен через приложение.", "category": "refund", "expected_slugs": ["return-policy"], "synthetic": true}
+{"id": "g0275", "text": "Оформите возврат средств, духи оказались не тем ароматом Заказ оформлен через приложение.", "category": "refund", "expected_slugs": ["return-non-returnable"], "synthetic": true}
+{"id": "g0276", "text": "Оформите возврат средств, товар оказался бракованным Заказ оформлен через приложение.", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0277", "text": "Хочу вернуть деньги: товар оказался бракованным Спасибо!", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0278", "text": "Хочу вернуть деньги: качество не соответствует описанию Заказ оформлен через приложение.", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0279", "text": "Верните оплату, духи оказались не тем ароматом Жду ответа.", "category": "refund", "expected_slugs": ["return-non-returnable"], "synthetic": true}
+{"id": "g0280", "text": "Оформите возврат средств, заказ отменён складом Жду ответа.", "category": "refund", "expected_slugs": ["order-cancel", "refund-timeline"], "synthetic": true}
+{"id": "g0281", "text": "Хочу вернуть деньги: деньги за отмену так и не пришли Обращаюсь второй раз.", "category": "refund", "expected_slugs": ["refund-timeline"], "synthetic": true}
+{"id": "g0282", "text": "Оформите возврат средств, устройство не включается", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0283", "text": "Оформите возврат средств, товар оказался бракованным", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0284", "text": "Хочу вернуть деньги: духи оказались не тем ароматом Обращаюсь второй раз.", "category": "refund", "expected_slugs": ["return-non-returnable"], "synthetic": true}
+{"id": "g0285", "text": "Оформите возврат средств, доставили не тот товар Обращаюсь второй раз.", "category": "refund", "expected_slugs": ["return-policy"], "synthetic": true}
+{"id": "g0286", "text": "Хочу вернуть деньги: деньги за отмену так и не пришли Жду ответа.", "category": "refund", "expected_slugs": ["refund-timeline"], "synthetic": true}
+{"id": "g0287", "text": "Прошу возврат денег за заказ 1042315, качество не соответствует описанию Обращаюсь второй раз.", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0288", "text": "Хочу вернуть деньги: деньги за отмену так и не пришли Ответьте, пожалуйста, поскорее.", "category": "refund", "expected_slugs": ["refund-timeline"], "synthetic": true}
+{"id": "g0289", "text": "Оформите возврат средств, товар перестал работать через два дня Спасибо!", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0290", "text": "Прошу возврат денег за заказ 1042315, устройство не включается Спасибо!", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0291", "text": "Прошу возврат денег за заказ 1150022, товар перестал работать через два дня Спасибо!", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0292", "text": "Прошу возврат денег за заказ 1150022, товар перестал работать через два дня", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0293", "text": "Хочу вернуть деньги: духи оказались не тем ароматом Жду ответа.", "category": "refund", "expected_slugs": ["return-non-returnable"], "synthetic": true}
+{"id": "g0294", "text": "Оформите возврат средств, устройство не включается Заказ оформлен через приложение.", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0295", "text": "Прошу возврат денег за заказ 1042315, качество не соответствует описанию Жду ответа.", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0296", "text": "Оформите возврат средств, деньги за отмену так и не пришли Спасибо!", "category": "refund", "expected_slugs": ["refund-timeline"], "synthetic": true}
+{"id": "g0297", "text": "Прошу возврат денег за заказ 1078654, доставили не тот товар", "category": "refund", "expected_slugs": ["return-policy"], "synthetic": true}
+{"id": "g0298", "text": "Оформите возврат средств, деньги за отмену так и не пришли Заказ оформлен через приложение.", "category": "refund", "expected_slugs": ["refund-timeline"], "synthetic": true}
+{"id": "g0299", "text": "Хочу вернуть деньги: товар не подошёл по размеру Обращаюсь второй раз.", "category": "refund", "expected_slugs": ["return-policy"], "synthetic": true}
+{"id": "g0300", "text": "Оформите возврат средств, качество не соответствует описанию Спасибо!", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0301", "text": "Хочу вернуть деньги: товар не подошёл по размеру Спасибо!", "category": "refund", "expected_slugs": ["return-policy"], "synthetic": true}
+{"id": "g0302", "text": "Прошу возврат денег за заказ 998877, качество не соответствует описанию Спасибо!", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0303", "text": "Прошу возврат денег за заказ 1200341, духи оказались не тем ароматом Ответьте, пожалуйста, поскорее.", "category": "refund", "expected_slugs": ["return-non-returnable"], "synthetic": true}
+{"id": "g0304", "text": "Верните оплату, качество не соответствует описанию Жду ответа.", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0305", "text": "Хочу вернуть деньги: товар перестал работать через два дня Ответьте, пожалуйста, поскорее.", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0306", "text": "Хочу вернуть деньги: товар не подошёл по размеру", "category": "refund", "expected_slugs": ["return-policy"], "synthetic": true}
+{"id": "g0307", "text": "Прошу возврат денег за заказ 1200341, товар перестал работать через два дня", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0308", "text": "Оформите возврат средств, товар оказался бракованным Ответьте, пожалуйста, поскорее.", "category": "refund", "expected_slugs": ["return-defective"], "synthetic": true}
+{"id": "g0309", "text": "Оформите возврат средств, духи оказались не тем ароматом Обращаюсь второй раз.", "category": "refund", "expected_slugs": ["return-non-returnable"], "synthetic": true}
