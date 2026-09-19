@@ -92,6 +92,9 @@ class Ticket(Base):
     last_client_reply_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = _created_at()
     resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    #: Когда retention вычистил персональные данные тикета (NFR4). Строка тикета
+    #: при этом остаётся: на ней держатся audit_log и метрики.
+    scrubbed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     messages: Mapped[list[Message]] = relationship(back_populates="ticket")
     classifications: Mapped[list[Classification]] = relationship(back_populates="ticket")

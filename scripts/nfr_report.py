@@ -124,10 +124,16 @@ def build() -> tuple[list[dict], list[str]]:
         "NFR4",
         "Безопасность и приватность",
         "PII маскируется; хранение ≤ 90 дней; чужой тикет недоступен",
-        "маскирование и защита от IDOR проверены; retention-джоб не реализован",
-        PARTIAL,
-        "retention сырых тикетов (удаление данных) вынесен из шедулера этапа 4 - требует отдельной проверки",
+        "маскирование, защита от IDOR и retention проверены; открытые тикеты старше срока "
+        "не вычищаются, а фиксируются как нарушение",
+        PASS,
+        "retention вычищает персональные данные закрытых тикетов старше 90 дней, сохраняя "
+        "audit_log и агрегаты; строки не удаляются, иначе каскад унёс бы аудит. Открытый "
+        "тикет старше срока - предупреждение шедулера, а не вычистка рабочих данных оператора",
         [
+            "test_retention_integration.py::test_expired_closed_ticket_loses_personal_data",
+            "test_retention_integration.py::test_audit_and_metrics_survive_scrub",
+            "test_retention_integration.py::test_open_expired_ticket_is_reported_not_scrubbed",
             "test_pipeline_integration.py::test_pii_never_reaches_audit_log",
             "test_graph.py::test_pii_is_redacted_before_it_reaches_retriever",
             "test_tickets_api_integration.py::test_foreign_ticket_cannot_be_read_with_own_token",

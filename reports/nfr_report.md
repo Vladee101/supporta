@@ -1,15 +1,15 @@
 # Отчёт по нефункциональным требованиям
 
-Сформирован 2026-09-18 скриптом `scripts/nfr_report.py` из артефактов прогонов (`reports/`, `eval/report.json`) и тестов репозитория. Числа руками не вносятся.
+Сформирован 2026-09-19 скриптом `scripts/nfr_report.py` из артефактов прогонов (`reports/`, `eval/report.json`) и тестов репозитория. Числа руками не вносятся.
 
-**Итог:** 7 выполнено, 1 частично, 1 не выполнено, 1 не измеримо.
+**Итог:** 8 выполнено, 0 частично, 1 не выполнено, 1 не измеримо.
 
 | NFR | Требование | Порог | Замер | Статус |
 | --- | --- | --- | --- | --- |
 | NFR1 | Задержка | автоответ ≤ 8 с, до оператора ≤ 15 с (p95) | автоответ p95 6.30 с; до очереди оператора p95 6.78 с | **выполнено** |
 | NFR2 | Качество классификации | recall high-risk ≥ 0.95, macro-F1 ≥ 0.85 | recall жалоба 0.66, возврат 0.90; macro-F1 0.80 | **не выполнено** |
 | NFR3 | Проверяемость | 100% решений трассируемы, трейс ≤ 2 с | трейс p95 0.01 с; rule_id, оба confidence, версии документов - в каждом решении | **выполнено** |
-| NFR4 | Безопасность и приватность | PII маскируется; хранение ≤ 90 дней; чужой тикет недоступен | маскирование и защита от IDOR проверены; retention-джоб не реализован | **частично** |
+| NFR4 | Безопасность и приватность | PII маскируется; хранение ≤ 90 дней; чужой тикет недоступен | маскирование, защита от IDOR и retention проверены; открытые тикеты старше срока не вычищаются, а фиксируются как нарушение | **выполнено** |
 | NFR5 | Стоимость на тикет | ≤ $0.01–0.02 переменной стоимости | — | **не измеримо** |
 | NFR6 | Плавная деградация | RAG < порога → эскалация; сбой LLM → retry ×3, затем эскалация | retry ×3 с экспоненциальной паузой в пределах 10 с, без повторов на 4xx; затем эскалация; сбой на черновике не подменяет причину эскалации | **выполнено** |
 | NFR7 | Учёт ручных корректировок | 100% правок оператора с diff | draft и final сохраняются в operator_actions, сходство - в audit_log | **выполнено** |
@@ -26,8 +26,8 @@
 **NFR3.** время - нагрузочный тест; полнота трейса - интеграционные тесты.
 Тесты: `test_pipeline_integration.py::test_auto_answer_is_persisted_with_full_trace`, `test_pipeline_integration.py::test_retrievals_are_linked_to_document_versions`, `test_audit_api_integration.py::test_audit_shows_both_clarification_iterations`.
 
-**NFR4.** retention сырых тикетов (удаление данных) вынесен из шедулера этапа 4 - требует отдельной проверки.
-Тесты: `test_pipeline_integration.py::test_pii_never_reaches_audit_log`, `test_graph.py::test_pii_is_redacted_before_it_reaches_retriever`, `test_tickets_api_integration.py::test_foreign_ticket_cannot_be_read_with_own_token`, `test_tickets_api_integration.py::test_operator_token_is_not_a_ticket_token`.
+**NFR4.** retention вычищает персональные данные закрытых тикетов старше 90 дней, сохраняя audit_log и агрегаты; строки не удаляются, иначе каскад унёс бы аудит. Открытый тикет старше срока - предупреждение шедулера, а не вычистка рабочих данных оператора.
+Тесты: `test_retention_integration.py::test_expired_closed_ticket_loses_personal_data`, `test_retention_integration.py::test_audit_and_metrics_survive_scrub`, `test_retention_integration.py::test_open_expired_ticket_is_reported_not_scrubbed`, `test_pipeline_integration.py::test_pii_never_reaches_audit_log`, `test_graph.py::test_pii_is_redacted_before_it_reaches_retriever`, `test_tickets_api_integration.py::test_foreign_ticket_cannot_be_read_with_own_token`, `test_tickets_api_integration.py::test_operator_token_is_not_a_ticket_token`.
 
 **NFR5.** переменная стоимость - это LLM-вызовы, а провайдер не выбран (ADR-009). Базовая линия стоит $0; измерение возможно только с реальным провайдером по токенам в трейсе.
 

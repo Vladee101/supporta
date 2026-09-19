@@ -1,15 +1,13 @@
-"""Шедулер: таймауты жизненного цикла эскалаций.
+"""Шедулер: таймауты жизненного цикла эскалаций и retention.
 
     python -m app.workers.scheduler
 
-Две задачи, обе идемпотентны и безопасны при нескольких экземплярах
+Три задачи, все идемпотентны и безопасны при нескольких экземплярах
 (строки берутся через FOR UPDATE SKIP LOCKED):
 
 * эскалация тикетов, по которым клиент не ответил на уточнение (NFR9);
-* возврат в очередь эскалаций с истёкшим claim'ом (FR10).
-
-Retention сырых тикетов (NFR4) сюда пока не входит - это отдельная задача
-с удалением данных, и она требует своей проверки.
+* возврат в очередь эскалаций с истёкшим claim'ом (FR10);
+* вычистка персональных данных закрытых тикетов старше срока хранения (NFR4).
 """
 
 from __future__ import annotations
@@ -17,17 +15,27 @@ from __future__ import annotations
 import argparse
 import logging
 import time
+from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 
 from app.core.config import get_settings
 from app.db.base import get_session_factory
 from app.escalations.operations import release_expired
 from app.escalations.timeouts import escalate_clarification_timeouts
+from app.retention import scrub_expired
 
 log = logging.getLogger("scheduler")
 
 
-def run_once() -> tuple[int, int]:
+@dataclass(frozen=True, slots=True)
+class TickResult:
+    clarification_timeouts: int
+    expired_claims: int
+    scrubbed: int
+    overdue_open: int
+
+
+def run_once() -> TickResult:
     settings = get_settings()
     now = datetime.now(UTC)
     session_factory = get_session_factory()
@@ -38,7 +46,11 @@ def run_once() -> tuple[int, int]:
         )
     with session_factory() as session:
         released = release_expired(session, now=now)
-    return timed_out, released
+    with session_factory() as session:
+        retention = scrub_expired(
+            session, now=now, retention=timedelta(days=settings.raw_ticket_retention_days)
+        )
+    return TickResult(timed_out, released, retention.scrubbed, retention.overdue_open)
 
 
 def main() -> None:
@@ -50,9 +62,18 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
     try:
         while True:
-            timed_out, released = run_once()
-            if timed_out or released:
-                log.info("clarification timeouts=%d, expired claims=%d", timed_out, released)
+            tick = run_once()
+            if tick.clarification_timeouts or tick.expired_claims or tick.scrubbed:
+                log.info(
+                    "clarification timeouts=%d, expired claims=%d, retention scrubbed=%d",
+                    tick.clarification_timeouts,
+                    tick.expired_claims,
+                    tick.scrubbed,
+                )
+            if tick.overdue_open:
+                # Открытый тикет старше срока хранения: персональные данные держатся
+                # дольше NFR4, потому что тикет ещё в работе. Нужен разбор, не вычистка.
+                log.warning("NFR4: открытых тикетов старше срока хранения: %d", tick.overdue_open)
             if args.once:
                 break
             time.sleep(args.interval)

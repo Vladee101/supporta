@@ -111,7 +111,7 @@ Groundedness по документу размечается вручную и в
 outbox poller ─(confirm)─► RabbitMQ: escalations.created (priority, DLX)
 escalation consumer ─► Postgres (inbox + статус) ─► escalations.notify (fanout)
 API: мост ─► WebSocket консоли        REST: очередь / контекст / claim / resolve
-scheduler ─► таймауты уточнения (NFR9), истёкшие claim'ы (FR10)
+scheduler ─► таймауты уточнения (NFR9), истёкшие claim'ы (FR10), retention (NFR4)
 ```
 
 Запуск (каждый - отдельным процессом):
