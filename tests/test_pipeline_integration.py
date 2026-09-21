@@ -132,9 +132,7 @@ def test_high_risk_escalation_carries_no_draft(db_session, indexed_kb, service):
 
 
 def test_tech_issue_escalation_carries_draft(db_session, indexed_kb, service):
-    ticket = make_ticket(
-        db_session, "Приложение вылетает при запуске", clarifications=1
-    )
+    ticket = make_ticket(db_session, "Приложение вылетает при запуске", clarifications=1)
     result = service.process(db_session, ticket)
 
     escalation = db_session.get(Escalation, result.escalation_id)

@@ -42,9 +42,7 @@ def make_escalated_ticket(
     )
     session.add(ticket)
     session.flush()
-    session.add(
-        Message(ticket_id=ticket.id, sender=MessageSender.CLIENT, content="Вопрос клиента")
-    )
+    session.add(Message(ticket_id=ticket.id, sender=MessageSender.CLIENT, content="Вопрос клиента"))
     escalation = create_escalation(
         session,
         ticket,

@@ -72,16 +72,12 @@ def main() -> None:
 
     with get_session_factory()() as session:
         if args.reindex:
-            session.execute(
-                update(KbDocumentVersion).values(embedding=None, embedding_model=None)
-            )
+            session.execute(update(KbDocumentVersion).values(embedding=None, embedding_model=None))
             session.commit()
             print("существующие embedding'и сброшены")
 
         pending = list(
-            session.scalars(
-                select(KbDocumentVersion).where(KbDocumentVersion.embedding.is_(None))
-            )
+            session.scalars(select(KbDocumentVersion).where(KbDocumentVersion.embedding.is_(None)))
         )
         if not pending:
             print("нечего индексировать: у всех версий есть embedding")

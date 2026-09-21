@@ -106,9 +106,7 @@ class OperatorRole(StrEnum):
 HIGH_RISK_CATEGORIES: frozenset[Category] = frozenset({Category.COMPLAINT, Category.REFUND})
 
 #: Категории, для которых автоответ в принципе возможен (R4).
-AUTO_ANSWERABLE_CATEGORIES: frozenset[Category] = frozenset(
-    {Category.FAQ, Category.ORDER_STATUS}
-)
+AUTO_ANSWERABLE_CATEGORIES: frozenset[Category] = frozenset({Category.FAQ, Category.ORDER_STATUS})
 
 #: Категория, уходящая в цикл уточнения (R7a).
 CLARIFIABLE_CATEGORIES: frozenset[Category] = frozenset({Category.TECH_ISSUE})

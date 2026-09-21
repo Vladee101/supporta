@@ -14,6 +14,7 @@ from app.api.ws import ConnectionHub
 from app.core.config import get_settings
 from app.messaging.topology import NOTIFY_EXCHANGE
 from app.messaging.ws_bridge import NotifyBridge
+from tests.conftest import skip_unless_required
 
 pytestmark = pytest.mark.integration
 
@@ -24,7 +25,7 @@ def broker_url() -> str:
     try:
         pika.BlockingConnection(pika.URLParameters(url)).close()
     except pika.exceptions.AMQPError as exc:
-        pytest.skip(f"RabbitMQ недоступен: {exc!r}")
+        skip_unless_required(f"RabbitMQ недоступен: {exc!r}")
     return url
 
 

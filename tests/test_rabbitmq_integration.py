@@ -15,6 +15,7 @@ import pytest
 
 from app.core.config import get_settings
 from app.messaging.publisher import PikaPublisher, PublishError
+from tests.conftest import skip_unless_required
 
 pytestmark = pytest.mark.integration
 
@@ -30,7 +31,7 @@ def channel():
     try:
         connection = pika.BlockingConnection(pika.URLParameters(get_settings().rabbitmq_url))
     except pika.exceptions.AMQPError as exc:
-        pytest.skip(f"RabbitMQ недоступен: {exc!r}")
+        skip_unless_required(f"RabbitMQ недоступен: {exc!r}")
 
     ch = connection.channel()
     # Та же форма топологии, что в app.messaging.topology, но с тестовыми именами.
@@ -102,9 +103,7 @@ def test_dead_connection_is_replaced_and_publish_retried(channel, publisher):
             raise pika.exceptions.StreamLostError("connection reset by broker")
 
     publisher._channel = DeadChannel()
-    publisher.publish(
-        "escalation.created", json.dumps({"n": "retry"}).encode(), message_id="retry"
-    )
+    publisher.publish("escalation.created", json.dumps({"n": "retry"}).encode(), message_id="retry")
 
     assert [body["n"] for _, body in _drain(channel, QUEUE)] == ["retry"]
 

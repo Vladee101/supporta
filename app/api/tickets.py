@@ -141,9 +141,7 @@ def add_message(
 ) -> dict:
     try:
         ticket = tickets.get_ticket(session, ticket_id)
-        run_agent = tickets.add_client_message(
-            session, ticket, body.content, now=datetime.now(UTC)
-        )
+        run_agent = tickets.add_client_message(session, ticket, body.content, now=datetime.now(UTC))
     except tickets.TicketError as exc:
         raise _translate(exc) from exc
 

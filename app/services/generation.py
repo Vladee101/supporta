@@ -48,7 +48,7 @@ SYSTEM_PROMPT = """Ты пишешь ответ клиенту от лица с�
 
 def _format_context(chunks: tuple[RetrievedChunk, ...]) -> str:
     return "\n\n".join(
-        f"<документ slug=\"{chunk.slug}\">\n{chunk.title}\n{chunk.content}\n</документ>"
+        f'<документ slug="{chunk.slug}">\n{chunk.title}\n{chunk.content}\n</документ>'
         for chunk in chunks[:MAX_CONTEXT_CHUNKS]
     )
 

@@ -175,13 +175,9 @@ class AgentService:
                 class_confidence=(
                     outcome.classification.confidence if outcome.classification else None
                 ),
-                rag_confidence=(
-                    outcome.retrieval.rag_confidence if outcome.retrieval else None
-                ),
+                rag_confidence=(outcome.retrieval.rag_confidence if outcome.retrieval else None),
                 payload=self._audit_payload(outcome, iteration),
-                reasoning=(
-                    outcome.classification.reasoning if outcome.classification else None
-                ),
+                reasoning=(outcome.classification.reasoning if outcome.classification else None),
                 trace_id=trace_id,
             )
         )

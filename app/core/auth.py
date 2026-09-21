@@ -57,9 +57,9 @@ def _sign(payload: bytes, secret: str) -> str:
 
 def _issue(claims: dict, *, ttl_seconds: int, secret: str | None, now: float | None) -> str:
     issued = now if now is not None else time.time()
-    payload = json.dumps(
-        claims | {"exp": int(issued + ttl_seconds)}, separators=(",", ":")
-    ).encode("utf-8")
+    payload = json.dumps(claims | {"exp": int(issued + ttl_seconds)}, separators=(",", ":")).encode(
+        "utf-8"
+    )
     return f"{_b64encode(payload)}.{_sign(payload, secret or get_settings().auth_secret)}"
 
 

@@ -23,9 +23,7 @@ from app.domain.enums import EscalationReason, MessageSender, TicketStatus
 from app.escalations.writer import create_escalation
 
 
-def escalate_clarification_timeouts(
-    session: Session, *, now: datetime, timeout: timedelta
-) -> int:
+def escalate_clarification_timeouts(session: Session, *, now: datetime, timeout: timedelta) -> int:
     last_agent_message = (
         select(Message.ticket_id, func.max(Message.created_at).label("asked_at"))
         .where(Message.sender == MessageSender.AGENT)

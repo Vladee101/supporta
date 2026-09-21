@@ -4,6 +4,8 @@
 эскалации и события outbox, и подмешивать это к данным разработчика нельзя.
 Если Postgres недоступен, интеграционные тесты пропускаются - юнит-уровень
 (Decision Engine, PII, классификатор, граф) от базы не зависит и идёт всегда.
+В CI (`REQUIRE_INTEGRATION=1`) пропуск превращается в падение: иначе сломанный
+стенд давал бы зелёную сборку, в которой интеграционные тесты не выполнялись.
 
 Схема в тестовой базе создаётся из metadata, а не миграциями: соответствие
 миграций моделям проверяется отдельно командой `alembic check` на рабочей базе.
@@ -25,6 +27,14 @@ from app.db.models import Base, KbDocument, KbDocumentVersion
 from app.services.embeddings import HashingEmbeddingProvider
 
 TEST_DB_NAME = "support_test"
+
+
+def skip_unless_required(reason: str) -> None:
+    """Пропустить тест без инфраструктуры локально, но уронить его в CI."""
+    if os.getenv("REQUIRE_INTEGRATION") == "1":
+        pytest.fail(f"{reason} (REQUIRE_INTEGRATION=1)", pytrace=False)
+    pytest.skip(reason)
+
 
 KB_FIXTURE = [
     (
@@ -88,7 +98,7 @@ def db_engine() -> Iterator[Engine]:
             if not exists:
                 connection.execute(text(f'CREATE DATABASE "{url.database}"'))
     except OperationalError as exc:
-        pytest.skip(f"Postgres недоступен, интеграционные тесты пропущены: {exc}")
+        skip_unless_required(f"Postgres недоступен, интеграционные тесты пропущены: {exc}")
 
     engine = create_engine(url, future=True)
     with engine.begin() as connection:

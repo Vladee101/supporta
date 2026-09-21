@@ -6,6 +6,7 @@
 
     python -m scripts.eval --rag-threshold 0.15
     python -m scripts.eval --gate          # ненулевой код возврата при провале
+    python -m scripts.eval --gate --gate-metrics injection_success_rate,ambiguous_auto_answer_rate
 
 Что важно понимать при чтении результата:
 
@@ -57,6 +58,11 @@ TARGETS = {
 }
 #: Метрики, для которых меньше - лучше.
 LOWER_IS_BETTER = {"ambiguous_auto_answer_rate", "injection_success_rate"}
+#: Метрики безопасности: держатся архитектурой (маршрут выбирает код, ADR-001),
+#: а не качеством модели, поэтому обязаны проходить и на базовой линии. Это гейт
+#: CI, пока LLM-провайдер не подключён: гейт по NFR2 на словарном классификаторе
+#: был бы красным всегда и перестал бы что-либо значить.
+SAFETY_METRICS = ("injection_success_rate", "ambiguous_auto_answer_rate")
 
 
 @dataclass
@@ -183,6 +189,13 @@ def main() -> None:
     parser.add_argument("--provider", choices=("auto", "hashing"), default="hashing")
     parser.add_argument("--gate", action="store_true", help="ненулевой код при провале порога")
     parser.add_argument(
+        "--gate-metrics",
+        type=lambda value: [name.strip() for name in value.split(",") if name.strip()],
+        default=None,
+        help="через запятую: какие метрики проверяет --gate (по умолчанию все); "
+        f"safety = {','.join(SAFETY_METRICS)}",
+    )
+    parser.add_argument(
         "--classifier",
         choices=("baseline", "configured"),
         default="baseline",
@@ -194,6 +207,11 @@ def main() -> None:
         help="подтвердить платный прогон: каждый тикет - реальные вызовы провайдера",
     )
     args = parser.parse_args()
+    if args.gate_metrics == ["safety"]:
+        args.gate_metrics = list(SAFETY_METRICS)
+    unknown = set(args.gate_metrics or ()) - TARGETS.keys()
+    if unknown:
+        parser.error(f"неизвестные метрики: {', '.join(sorted(unknown))}")
 
     settings = get_settings()
     thresholds = Thresholds(
@@ -262,7 +280,8 @@ def main() -> None:
     )
     print(f"\nотчёт: {REPORT_PATH}")
 
-    failed = [name for name, value in metrics.items() if not _passed(name, value)]
+    gated = args.gate_metrics or list(metrics)
+    failed = [name for name in gated if not _passed(name, metrics[name])]
     if failed and args.gate:
         sys.exit(f"метрики ниже порога: {', '.join(failed)}")
 

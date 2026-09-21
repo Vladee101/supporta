@@ -1,53 +1,121 @@
 # Support-агент
 
-AI-агент службы поддержки: классификация тикета, RAG-поиск по базе знаний,
-**детерминированная** маршрутизация (автоответ / уточнение / эскалация),
-human-in-the-loop подтверждение оператором.
+[![CI](https://github.com/Vladee101/supporta/actions/workflows/ci.yml/badge.svg)](https://github.com/Vladee101/supporta/actions/workflows/ci.yml)
 
-Проектная документация - [Support-агент — Design Document.md](Support-агент%20—%20Design%20Document.md).
-Код следует документу, а не наоборот: правила маршрутизации, пороги и схема данных
-имеют прямые ссылки на разделы документа.
+AI-агент службы поддержки: классифицирует обращение, ищет ответ в базе знаний
+(RAG) и **детерминированно** решает - ответить самому, запросить уточнение или
+передать оператору. Оператор работает в собственной консоли и видит всё, что
+видел агент.
+
+Проект начинался с design document, а код писался под него, а не наоборот:
+[Support-агент — Design Document.md](Support-агент%20—%20Design%20Document.md) -
+требования и критерии приемки, use cases, decision table, ERD, API-контракты,
+11 ADR, стратегия тестирования, SLI и risk register. Правила маршрутизации,
+пороги и схема данных в коде ссылаются на разделы документа.
+
+## Ключевые решения
+
+| Решение | Почему | Где |
+| --- | --- | --- |
+| Маршрут выбирает код, а не LLM | Решение воспроизводимо и тестируемо, текст тикета физически не может изменить маршрут (prompt injection) | ADR-001, [decision.py](app/domain/decision.py) |
+| Нет поведения по умолчанию | Непокрытая комбинация входов - эскалация и алерт, а не случайный автоответ; полный перебор 144 комбинаций в тестах | Decision table, R-default |
+| Postgres - source of truth, RabbitMQ - транспорт | Тикет, эскалация и событие пишутся одной транзакцией (transactional outbox), consumer идемпотентен через inbox | ADR-004, ADR-007 |
+| Провайдер LLM выбирается замером | Зарубежные API недоступны из РФ (152-ФЗ); адаптеры GigaChat и OpenAI-совместимых API, logprobs или k-sampling | ADR-009 |
+| Версии документов KB вместо удаления | Аудит решения показывает ровно тот текст, который видел агент | ADR-011 |
+
+## Архитектура
+
+```mermaid
+flowchart TB
+    client(["Клиент / канал"]) -->|"webhook, HMAC"| api["FastAPI"]
+    subgraph agent["Агент - LangGraph"]
+        pii["PII-редакция"] --> cls["Классификация"] --> rag["RAG: pgvector"] --> de{{"Decision Engine"}}
+    end
+    api --> agent
+    de -->|"A1 автоответ, A3 уточнение"| api
+    de -->|"A2, A4 эскалация"| tx[("Postgres: тикет + эскалация + outbox")]
+    tx --> poller["Outbox poller"] -->|"publisher confirm"| mq[["RabbitMQ: priority + DLX"]]
+    mq --> consumer["Escalation consumer"] --> tx
+    consumer -->|"fanout"| ws["WebSocket"]
+    ws --> console["Консоль оператора: React"]
+    console -->|"claim, resolve"| api
+    scheduler["Scheduler"] -->|"таймауты, claim TTL, retention"| tx
+```
+
+Подробно - component и sequence diagram, диаграмма состояний тикета и ERD в
+design document.
+
+## Результаты
+
+Отчёт по NFR собирается скриптом из артефактов прогонов, числа руками не вносятся -
+[reports/nfr_report.md](reports/nfr_report.md). Итог: **8 из 10 выполнено**.
+
+| | Порог | Замер |
+| --- | --- | --- |
+| NFR1: p95 автоответа | ≤ 8 с | 6.30 с (до исправлений по нагрузочному тесту - 12.98 с) |
+| NFR8: одновременных тикетов | 50 без деградации | 50: p95 6.30 с, 0% ошибок; 100: p95 6.41 с |
+| NFR10: успешных prompt injection | 0 | 0 из 24 |
+| NFR2: recall high-risk / macro-F1 | ≥ 0.95 / ≥ 0.85 | 0.66-0.90 / 0.80 - **не выполнено** |
+| NFR5: стоимость на тикет | ≤ $0.02 | не измеримо без провайдера |
+
+NFR2 и NFR5 упираются в одно: LLM-провайдер не подключён, классификация идёт на
+словарной базовой линии. Адаптеры готовы и покрыты тестами на имитированном
+провайдере; замер на golden set с реальным ключом - следующий шаг (ADR-009).
+
+Что проверяет CI ([ci.yml](.github/workflows/ci.yml)): ruff; миграции применяются
+на чистую базу и совпадают с моделями (`alembic check`); unit- и
+интеграционные тесты на Python 3.11 и 3.14 против живых Postgres (pgvector) и
+RabbitMQ - без инфраструктуры они падают, а не пропускаются; eval на golden set
+с гейтом по метрикам безопасности; проверка типов и сборка консоли.
 
 ## Быстрый старт
 
+Нужны Python ≥ 3.11, Docker и Node.js 22 (для консоли). Команды - для Windows;
+на Linux/macOS вместо `.venv/Scripts/python.exe` - `.venv/bin/python`.
+
 ```bash
 python -m venv .venv
-.venv/Scripts/python.exe -m pip install -e ".[dev]"   # Linux/macOS: .venv/bin/python
+.venv/Scripts/python.exe -m pip install -e ".[dev]"
 cp .env.example .env
 docker compose up -d
 .venv/Scripts/python.exe -m alembic upgrade head
 .venv/Scripts/python.exe -m scripts.seed_kb
+.venv/Scripts/python.exe -m scripts.index_kb --provider hashing
 .venv/Scripts/python.exe -m pytest
 ```
 
-Расчёт embedding'ов - отдельным шагом, он тянет ~2 ГБ весов bge-m3:
+`--provider hashing` - офлайновые векторы без скачивания модели. Production-связка -
+bge-m3 (ADR-006), она тянет ~2 ГБ весов:
 
 ```bash
 .venv/Scripts/python.exe -m pip install -e ".[embeddings]"
 .venv/Scripts/python.exe -m scripts.index_kb
 ```
 
+Живой стек: API, воркеры и консоль - см. разделы «Эскалации» и «Консоль оператора»
+ниже; все команды собраны в [Makefile](Makefile).
+
 ## Структура
 
 ```
 app/
-  domain/decision.py   Decision Engine: R1-R9, R7c, R-default - чистая функция без I/O
-  domain/enums.py      категории, действия A1-A4, статусы, причины эскалации
-  agent/graph.py       LangGraph: redact → classify → retrieve → decide → act
-  agent/service.py     применение решения к БД одной транзакцией (тикет+эскалация+outbox)
-  services/pii.py      маскирование PII до первого обращения к LLM (NFR4)
-  services/classifier.py   базовая линия + обёртка над LLM-провайдером
-  services/embeddings.py   bge-m3 и офлайновый хеширующий провайдер
-  services/retrieval.py    pgvector-поиск, rag_confidence = max(relevance_score)
-  services/generation.py   автоответ и черновик оператору (ADR-008)
-  db/models.py         схема из ERD: история классификаций, версии KB, outbox, claim
-  core/config.py       пороги и таймауты (в конфиге, а не в коде правил)
-  main.py              FastAPI: /health и просмотр действующей decision table
-migrations/            alembic: 0001 - схема + pgvector + HNSW, 0002 - источник confidence
-scripts/               seed_kb, index_kb, gen_golden_set, eval
-data/kb_seed.json      32 документа базы знаний
-eval/                  golden set, adversarial-набор, отчёт метрик
-tests/                 юнит-тесты и интеграционные (маркер `integration`)
+  domain/decision.py   Decision Engine: правила R1-R10, R-default - чистая функция без I/O
+  agent/               LangGraph: redact → classify → retrieve → decide → act; запись одной транзакцией
+  services/            PII-редакция, классификатор, embeddings, retrieval, генерация, адаптеры LLM
+  api/                 REST и WebSocket: тикеты, эскалации, KB, аудит
+  escalations/         запись эскалации, consumer, claim, таймауты
+  messaging/           топология RabbitMQ, publisher с confirm, outbox, мост в WebSocket
+  workers/             outbox poller, escalation consumer, scheduler; переподключение с backoff
+  kb/                  версии документов и фоновая индексация
+  retention.py         вычистка персональных данных по сроку хранения (NFR4)
+  db/models.py         схема из ERD
+  core/                конфиг (пороги и таймауты), токены и подписи
+console/               консоль оператора: React 19 + TypeScript + Vite
+migrations/            alembic 0001-0005
+scripts/               seed/index KB, golden set, eval, нагрузочный тест, отчёт по NFR, демо
+eval/                  golden set (359), adversarial-набор (24), отчёт метрик
+reports/               результаты нагрузочного теста и отчёт по NFR
+tests/                 unit и интеграционные (маркер `integration`)
 ```
 
 ## Decision Engine
@@ -87,7 +155,11 @@ decide(DecisionInput(Category.REFUND, rag_confidence=0.99, class_confidence=0.99
 
 `scripts/eval.py` печатает таблицу «метрика / порог / замер / дельта» и сохраняет
 `eval/report.json`; с флагом `--gate` возвращает ненулевой код при провале порога -
-это и есть гейт для CI из раздела «Методика оценки».
+это и есть гейт для CI из раздела «Методика оценки». `--gate-metrics` сужает
+проверку до перечисленных метрик: CI сейчас гейтит `--gate-metrics safety`
+(доля успешных инъекций и автоответов на неоднозначные обращения) - они держатся
+архитектурой и обязаны проходить уже на базовой линии, а гейт по NFR2 на
+словарном классификаторе был бы красным всегда.
 
 **Как читать цифры.** Сейчас пайплайн работает на базовой линии: словарный
 классификатор и хеширующие векторы вместо LLM и bge-m3. Это нижняя граница,
@@ -130,6 +202,11 @@ publisher confirm'ом до отметки `published`), consumer - дедупл
 inbox `consumed_events` в той же транзакции, что и смена статуса тикета, ack -
 только после commit'а. Сообщение, которое нельзя обработать, уходит в
 `escalations.dead`, а не крутится в очереди.
+
+Временная недоступность Postgres или RabbitMQ воркеры не роняет: они пережидают
+сбой с экспоненциальной паузой и продолжают работу сами, а эскалации, созданные
+за время простоя брокера, копятся в outbox и доставляются после восстановления.
+Проверено остановкой контейнеров на живом стенде.
 
 ## Консоль оператора (этап 5)
 
@@ -210,3 +287,5 @@ SQLAlchemy на каждый поток первой волны), удержан
 | 4 | Эскалации: транзакция + outbox + RabbitMQ + consumer + WS | готово |
 | 5 | Ingestion API, Operator Console, KB admin | готово |
 | 6 | Нагрузочный тест, отчёт «замер vs порог» по NFR | готово - [reports/nfr_report.md](reports/nfr_report.md) |
+| - | Устойчивость воркеров к сбоям инфраструктуры, CI | готово |
+| - | Замер LLM-провайдеров на golden set (NFR2, NFR5) | нужен ключ GigaChat или YandexGPT |

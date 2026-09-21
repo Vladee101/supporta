@@ -43,9 +43,7 @@ def _awaiting_ticket(session, asked_minutes_ago: int) -> Ticket:
 def test_silent_client_is_escalated_after_timeout(db_session):
     ticket = _awaiting_ticket(db_session, asked_minutes_ago=31)
 
-    escalated = escalate_clarification_timeouts(
-        db_session, now=datetime.now(UTC), timeout=TIMEOUT
-    )
+    escalated = escalate_clarification_timeouts(db_session, now=datetime.now(UTC), timeout=TIMEOUT)
 
     assert escalated == 1
     assert db_session.get(Ticket, ticket.id).status == TicketStatus.ESCALATED_STANDARD
@@ -66,9 +64,7 @@ def test_timeout_escalation_writes_outbox_event_too(db_session):
 
 def test_client_still_has_time(db_session):
     ticket = _awaiting_ticket(db_session, asked_minutes_ago=10)
-    assert escalate_clarification_timeouts(
-        db_session, now=datetime.now(UTC), timeout=TIMEOUT
-    ) == 0
+    assert escalate_clarification_timeouts(db_session, now=datetime.now(UTC), timeout=TIMEOUT) == 0
     assert db_session.get(Ticket, ticket.id).status == TicketStatus.AWAITING_CLARIFICATION
 
 

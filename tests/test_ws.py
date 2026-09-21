@@ -31,9 +31,10 @@ def test_socket_receives_broadcast():
     operator_id = uuid.uuid4()
     token = issue_token(operator_id, OperatorRole.OPERATOR)
 
-    with TestClient(app) as client, client.websocket_connect(
-        f"/api/v1/ws/escalations?token={token}"
-    ) as socket:
+    with (
+        TestClient(app) as client,
+        client.websocket_connect(f"/api/v1/ws/escalations?token={token}") as socket,
+    ):
         assert socket.receive_json() == {"type": "hello", "operator_id": str(operator_id)}
 
         message = {"type": "escalation.queued", "escalation_id": "e1", "priority": 10}

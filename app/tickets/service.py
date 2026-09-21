@@ -107,9 +107,7 @@ def create_ticket(
     return Intake(ticket=ticket, created=True)
 
 
-def add_client_message(
-    session: Session, ticket: Ticket, content: str, *, now: datetime
-) -> bool:
+def add_client_message(session: Session, ticket: Ticket, content: str, *, now: datetime) -> bool:
     """Добавить сообщение клиента. Возвращает True, если нужно запустить агента."""
     if ticket.status in _CLOSED:
         raise TicketClosedError(

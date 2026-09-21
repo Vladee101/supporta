@@ -118,8 +118,10 @@ _KEYWORDS: dict[Category, dict[str, float]] = {
 }
 
 _COMPILED: dict[Category, tuple[tuple[re.Pattern[str], float], ...]] = {
-    category: tuple((re.compile(pattern, re.IGNORECASE | re.UNICODE), weight)
-                    for pattern, weight in patterns.items())
+    category: tuple(
+        (re.compile(pattern, re.IGNORECASE | re.UNICODE), weight)
+        for pattern, weight in patterns.items()
+    )
     for category, patterns in _KEYWORDS.items()
 }
 

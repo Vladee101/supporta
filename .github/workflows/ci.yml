@@ -1,0 +1,128 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  DATABASE_URL: postgresql+psycopg://support:support@localhost:5432/support
+  RABBITMQ_URL: amqp://support:support@localhost:5672/
+  PYTHONIOENCODING: utf-8
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install ruff
+      - run: ruff check .
+      - run: ruff format --check .
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Нижняя граница из pyproject.toml и версия, на которой идёт разработка.
+        python-version: ["3.11", "3.14"]
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: support
+          POSTGRES_PASSWORD: support
+          POSTGRES_DB: support
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U support -d support"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+      rabbitmq:
+        image: rabbitmq:4
+        env:
+          RABBITMQ_DEFAULT_USER: support
+          RABBITMQ_DEFAULT_PASS: support
+        ports: ["5672:5672"]
+        options: >-
+          --health-cmd "rabbitmq-diagnostics -q ping"
+          --health-interval 10s --health-timeout 5s --health-retries 20
+    env:
+      # Без инфраструктуры интеграционные тесты не пропускаются, а падают:
+      # иначе сломанный стенд давал бы зелёную сборку.
+      REQUIRE_INTEGRATION: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - run: pip install -e ".[dev]"
+      - name: Миграции применяются на чистую базу
+        run: python -m alembic upgrade head
+      - name: Миграции совпадают с моделями
+        run: python -m alembic check
+      - name: Тесты (unit + integration)
+        run: python -m pytest -rs
+
+  eval:
+    # Гейт качества из раздела «Методика оценки». Пока LLM-провайдер не
+    # подключён, проверяются метрики безопасности (NFR10 и автоответы на
+    # неоднозначные обращения): они держатся архитектурой, а не моделью.
+    # Полный отчёт, включая NFR2, сохраняется артефактом.
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: support
+          POSTGRES_PASSWORD: support
+          POSTGRES_DB: support
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U support -d support"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - run: pip install -e ".[dev]"
+      - run: python -m alembic upgrade head
+      - run: python -m scripts.seed_kb
+      - run: python -m scripts.index_kb --provider hashing
+      - name: Eval на golden set (гейт по метрикам безопасности)
+        run: python -m scripts.eval --rag-threshold 0.15 --gate --gate-metrics safety
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-report
+          path: eval/report.json
+
+  console:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: console
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: console/package-lock.json
+      - run: npm ci
+      - name: Проверка типов и сборка
+        run: npm run build

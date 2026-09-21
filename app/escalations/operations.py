@@ -346,9 +346,7 @@ def resolve(
     return operator_action
 
 
-def _final_text(
-    escalation: Escalation, action: OperatorActionType, final_text: str | None
-) -> str:
+def _final_text(escalation: Escalation, action: OperatorActionType, final_text: str | None) -> str:
     cleaned = (final_text or "").strip()
 
     if action is OperatorActionType.CONFIRM:

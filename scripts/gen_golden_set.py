@@ -190,11 +190,7 @@ def _fill(template: str, rng: random.Random) -> tuple[str, list[str]]:
 
 def build(size: int, seed: int) -> list[dict]:
     rng = random.Random(seed)
-    core = [
-        json.loads(line)
-        for line in CORE_PATH.read_text(encoding="utf-8").splitlines()
-        if line
-    ]
+    core = [json.loads(line) for line in CORE_PATH.read_text(encoding="utf-8").splitlines() if line]
 
     counts = {
         category: sum(1 for item in core if item["category"] == category)

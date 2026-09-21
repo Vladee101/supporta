@@ -21,9 +21,7 @@ class PublishError(RuntimeError):
 
 
 class EventPublisher(Protocol):
-    def publish(
-        self, routing_key: str, body: bytes, *, message_id: str, priority: int = 0
-    ) -> None:
+    def publish(self, routing_key: str, body: bytes, *, message_id: str, priority: int = 0) -> None:
         """Вернуть управление только после подтверждения брокера, иначе - исключение."""
         ...
 
@@ -43,9 +41,7 @@ class PikaPublisher:
             self._channel.confirm_delivery()
         return self._channel
 
-    def publish(
-        self, routing_key: str, body: bytes, *, message_id: str, priority: int = 0
-    ) -> None:
+    def publish(self, routing_key: str, body: bytes, *, message_id: str, priority: int = 0) -> None:
         properties = pika.BasicProperties(
             content_type="application/json",
             delivery_mode=pika.DeliveryMode.Persistent,
