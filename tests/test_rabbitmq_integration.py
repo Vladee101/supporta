@@ -2,12 +2,14 @@
 
 Тесты работают на отдельном виртуальном окружении имён - с префиксом
 `test.` у обменников и очередей - и удаляют их после себя, чтобы не мешать
-рабочим очередям разработчика. Если брокер недоступен, тесты пропускаются.
+рабочим очередям разработчика. Если брокер недоступен, тесты пропускаются
+(в CI с `REQUIRE_INTEGRATION=1` - падают).
 """
 
 from __future__ import annotations
 
 import json
+import time
 import uuid
 
 import pika
@@ -73,6 +75,22 @@ def _drain(ch, queue):
         messages.append((properties, json.loads(body)))
 
 
+def _wait_for(ch, queue, count, timeout=5.0):
+    """Дождаться `count` сообщений в очереди.
+
+    Dead-lettering асинхронный: `basic_nack` не ждёт ответа брокера, и в момент
+    чтения DLQ сообщение может быть ещё в пути. Одиночная проверка очереди
+    сразу после nack давала гонку - на быстром раннере CI очередь была пуста.
+    """
+    messages = []
+    deadline = time.monotonic() + timeout
+    while len(messages) < count and time.monotonic() < deadline:
+        messages.extend(_drain(ch, queue))
+        if len(messages) < count:
+            time.sleep(0.05)
+    return messages
+
+
 def test_priority_message_overtakes_standard_ones(channel, publisher):
     """Приоритетная очередь: клиентский запрос (A4) обгоняет стандартные эскалации."""
     for index in range(3):
@@ -120,5 +138,5 @@ def test_rejected_message_goes_to_dead_letter_queue(channel, publisher):
     method, _, _ = channel.basic_get(QUEUE, auto_ack=False)
     channel.basic_nack(method.delivery_tag, requeue=False)
 
-    dead = _drain(channel, DEAD)
+    dead = _wait_for(channel, DEAD, count=1)
     assert [properties.message_id for properties, _ in dead] == ["poison"]

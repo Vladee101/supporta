@@ -21,8 +21,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
       - run: pip install ruff
@@ -61,13 +61,17 @@ jobs:
       # иначе сломанный стенд давал бы зелёную сборку.
       REQUIRE_INTEGRATION: "1"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
           cache-dependency-path: pyproject.toml
-      - run: pip install -e ".[dev]"
+      # Плагин превращает упавшие тесты в аннотации: их видно на странице
+      # прогона без входа в GitHub и без скачивания логов.
+      - run: pip install -e ".[dev]" pytest-github-actions-annotate-failures
+      - name: Версии зависимостей
+        run: pip freeze
       - name: Миграции применяются на чистую базу
         run: python -m alembic upgrade head
       - name: Миграции совпадают с моделями
@@ -93,8 +97,8 @@ jobs:
           --health-cmd "pg_isready -U support -d support"
           --health-interval 5s --health-timeout 3s --health-retries 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
           cache: pip
@@ -105,7 +109,7 @@ jobs:
       - run: python -m scripts.index_kb --provider hashing
       - name: Eval на golden set (гейт по метрикам безопасности)
         run: python -m scripts.eval --rag-threshold 0.15 --gate --gate-metrics safety
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: eval-report
@@ -117,8 +121,8 @@ jobs:
       run:
         working-directory: console
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: "22"
           cache: npm
