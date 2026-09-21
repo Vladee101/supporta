@@ -8,6 +8,9 @@
 * эскалация тикетов, по которым клиент не ответил на уточнение (NFR9);
 * возврат в очередь эскалаций с истёкшим claim'ом (FR10);
 * вычистка персональных данных закрытых тикетов старше срока хранения (NFR4).
+
+Недоступность Postgres шедулер пережидает с нарастающей паузой: пропущенный
+тик безвреден, следующий подберёт всё, что накопилось.
 """
 
 from __future__ import annotations
@@ -18,11 +21,14 @@ import time
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 
+from sqlalchemy.exc import OperationalError
+
 from app.core.config import get_settings
 from app.db.base import get_session_factory
 from app.escalations.operations import release_expired
 from app.escalations.timeouts import escalate_clarification_timeouts
 from app.retention import scrub_expired
+from app.workers.backoff import Backoff
 
 log = logging.getLogger("scheduler")
 
@@ -60,9 +66,26 @@ def main() -> None:
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
+    backoff = Backoff()
     try:
         while True:
-            tick = run_once()
+            try:
+                tick = run_once()
+            except OperationalError as exc:
+                if args.once:
+                    raise
+                delay = backoff.next_delay()
+                log.warning(
+                    "database unavailable (attempt %d), retry in %.1fs: %s",
+                    backoff.attempt,
+                    delay,
+                    exc.orig,
+                )
+                time.sleep(delay)
+                continue
+            if backoff.attempt:
+                log.info("database is back after %d failed attempts", backoff.attempt)
+                backoff.reset()
             if tick.clarification_timeouts or tick.expired_claims or tick.scrubbed:
                 log.info(
                     "clarification timeouts=%d, expired claims=%d, retention scrubbed=%d",

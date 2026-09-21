@@ -25,6 +25,9 @@ def get_engine() -> Engine:
         pool_size=settings.db_pool_size,
         max_overflow=settings.db_max_overflow,
         pool_timeout=settings.db_pool_timeout_seconds,
+        # Воркеры переживают недоступность базы, только если попытка
+        # подключения заканчивается ошибкой, а не зависает (см. workers/backoff).
+        connect_args={"connect_timeout": settings.db_connect_timeout_seconds},
     )
 
 

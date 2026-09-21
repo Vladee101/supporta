@@ -11,33 +11,94 @@
   сбой временный, сообщение должно быть обработано, когда база вернётся;
 * любое другое исключение - в DLX: неизвестную ошибку безопаснее отложить,
   чем бесконечно перекладывать сообщение по кругу.
+
+Потеря соединения с брокером - тоже временный сбой: consumer переподключается
+с нарастающей паузой. Неподтверждённые сообщения брокер при обрыве вернёт в
+очередь сам, а повторная доставка уже обработанного отсекается inbox'ом
+`consumed_events`. Ошибки канала, закрытого брокером (например, расхождение
+топологии), - не временные: consumer падает, чтобы это заметили.
 """
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import time
+from collections.abc import Callable
 
 import pika
+import pika.exceptions
 from sqlalchemy.exc import OperationalError
+from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.db.base import get_session_factory
 from app.escalations.consumer import ConsumeResult, PoisonMessageError, handle_escalation_created
 from app.messaging.topology import NOTIFY_EXCHANGE, QUEUE, declare_topology
+from app.workers.backoff import Backoff
 
 log = logging.getLogger("escalation-consumer")
 
 PREFETCH = 10
 TRANSIENT_RETRY_DELAY = 2.0
 
+#: Сбои, после которых имеет смысл переподключиться: соединение потеряно,
+#: не установлено или канал оказался в неверном состоянии из-за обрыва.
+RECONNECTABLE_ERRORS = (
+    pika.exceptions.AMQPConnectionError,
+    pika.exceptions.ChannelWrongStateError,
+)
 
-def main() -> None:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
-    session_factory = get_session_factory()
 
-    connection = pika.BlockingConnection(pika.URLParameters(get_settings().rabbitmq_url))
+def consume(
+    session_factory: Callable[[], Session],
+    url: str,
+    *,
+    on_connected: Callable[[], None] = lambda: None,
+) -> None:
+    """Одна жизнь соединения: подключиться и разбирать очередь до обрыва."""
+    connection = pika.BlockingConnection(pika.URLParameters(url))
+    try:
+        _consume_on(connection, session_factory, on_connected)
+    finally:
+        # После обрыва соединение уже закрыто: close() бросил бы
+        # ConnectionWrongStateError и замаскировал исходную ошибку.
+        if connection.is_open:
+            with contextlib.suppress(pika.exceptions.AMQPError):
+                connection.close()
+
+
+def run(
+    session_factory: Callable[[], Session], url: str, *, backoff: Backoff | None = None
+) -> None:
+    backoff = backoff or Backoff()
+
+    def on_connected() -> None:
+        if backoff.attempt:
+            log.info("broker is back after %d failed attempts", backoff.attempt)
+        backoff.reset()
+
+    while True:
+        try:
+            consume(session_factory, url, on_connected=on_connected)
+            return
+        except RECONNECTABLE_ERRORS as exc:
+            delay = backoff.next_delay()
+            log.warning(
+                "broker connection lost (attempt %d), reconnect in %.1fs: %r",
+                backoff.attempt,
+                delay,
+                exc,
+            )
+            time.sleep(delay)
+
+
+def _consume_on(
+    connection: pika.BlockingConnection,
+    session_factory: Callable[[], Session],
+    on_connected: Callable[[], None],
+) -> None:
     channel = connection.channel()
     declare_topology(channel)
     # prefetch ограничивает число неподтверждённых сообщений на consumer'а:
@@ -86,14 +147,16 @@ def main() -> None:
         ch.basic_ack(method.delivery_tag)
 
     channel.basic_consume(QUEUE, on_message)
+    on_connected()
     log.info("consuming %s, prefetch=%d", QUEUE, PREFETCH)
-    try:
-        channel.start_consuming()
-    except KeyboardInterrupt:
-        channel.stop_consuming()
-    finally:
-        connection.close()
-        log.info("stopped")
+    channel.start_consuming()
+
+
+def main() -> None:
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
+    with contextlib.suppress(KeyboardInterrupt):
+        run(get_session_factory(), get_settings().rabbitmq_url)
+    log.info("stopped")
 
 
 if __name__ == "__main__":

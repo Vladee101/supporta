@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     db_pool_size: int = Field(default=10, ge=1)
     db_max_overflow: int = Field(default=10, ge=0)
     db_pool_timeout_seconds: float = Field(default=10.0, gt=0)
+    # Без таймаута подключение к Postgres может висеть вечно: порт-прокси
+    # (Docker Desktop, балансировщик) принимает TCP, а сервера за ним нет.
+    # Целые секунды, минимум 2 - ограничения libpq.
+    db_connect_timeout_seconds: int = Field(default=5, ge=2)
 
     # Пороги маршрутизации (калибруются, см. «Confidence и пороги»).
     class_confidence_threshold: float = Field(default=0.85, ge=0.0, le=1.0)
