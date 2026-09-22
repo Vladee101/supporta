@@ -26,7 +26,7 @@ import argparse
 import json
 import sys
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from app.agent.factory import build_classifier_and_generator
@@ -36,6 +36,7 @@ from app.domain.decision import DecisionInput, Thresholds, decide
 from app.domain.enums import Action
 from app.services.classifier import BaselineClassifier, Classifier
 from app.services.embeddings import HashingEmbeddingProvider, get_embedding_provider
+from app.services.llm import LLMUnavailableError
 from app.services.pii import redact
 from app.services.retrieval import Retriever
 
@@ -73,6 +74,11 @@ class Prediction:
     rule_id: str
     hit_at_5: bool | None
     ambiguous: bool
+    item_id: str = ""
+    class_confidence: float | None = None
+    confidence_source: str | None = None
+    rag_confidence: float | None = None
+    reasoning: str | None = None
 
 
 def _load(path: Path) -> list[dict]:
@@ -89,8 +95,26 @@ def _run(
     with get_session_factory()() as session:
         for item in items:
             text = redact(item["text"]).text
-            classification = classifier.classify(text)
             retrieval = retriever.retrieve(session, text)
+            try:
+                classification = classifier.classify(text)
+            except LLMUnavailableError as exc:
+                # Как в агенте (NFR6): провайдер недоступен после повторов -
+                # эскалация, а не падение всего прогона и потеря оплаченных вызовов.
+                print(f"  {item['id']}: провайдер недоступен - эскалация: {exc}", file=sys.stderr)
+                predictions.append(
+                    Prediction(
+                        gold=item["category"],
+                        predicted="llm_unavailable",
+                        action=Action.ESCALATE,
+                        rule_id="llm_unavailable",
+                        hit_at_5=None,
+                        ambiguous=bool(item.get("ambiguous")),
+                        item_id=item["id"],
+                        rag_confidence=retrieval.rag_confidence,
+                    )
+                )
+                continue
             decision = decide(
                 DecisionInput(
                     classification.category,
@@ -115,6 +139,11 @@ def _run(
                     rule_id=decision.rule_id,
                     hit_at_5=hit,
                     ambiguous=bool(item.get("ambiguous")),
+                    item_id=item["id"],
+                    class_confidence=classification.confidence,
+                    confidence_source=getattr(classification.confidence_source, "value", None),
+                    rag_confidence=retrieval.rag_confidence,
+                    reasoning=classification.reasoning,
                 )
             )
     return predictions
@@ -206,6 +235,19 @@ def main() -> None:
         action="store_true",
         help="подтвердить платный прогон: каждый тикет - реальные вызовы провайдера",
     )
+    parser.add_argument(
+        "--report",
+        type=Path,
+        default=REPORT_PATH,
+        help="куда сохранить отчёт; дельта считается к отчёту базовой линии eval/report.json",
+    )
+    parser.add_argument(
+        "--predictions-out",
+        type=Path,
+        default=None,
+        help="jsonl с предсказанием по каждому обращению: пороги можно перекалибровать "
+        "офлайн, не повторяя платные вызовы (decide - чистая функция)",
+    )
     args = parser.parse_args()
     if args.gate_metrics == ["safety"]:
         args.gate_metrics = list(SAFETY_METRICS)
@@ -258,7 +300,25 @@ def main() -> None:
         by_rule[prediction.rule_id] += 1
     print("\nраспределение по правилам:", dict(sorted(by_rule.items())))
 
-    REPORT_PATH.write_text(
+    if args.predictions_out:
+        rows = [
+            {"set": name, **asdict(p), "action": p.action.value}
+            for name, group in (("golden", predictions), ("adversarial", adversarial_predictions))
+            for p in group
+        ]
+        args.predictions_out.write_text(
+            "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows),
+            encoding="utf-8",
+        )
+        print(f"предсказания: {args.predictions_out}")
+
+    unavailable = sum(
+        1 for p in predictions + adversarial_predictions if p.rule_id == "llm_unavailable"
+    )
+    if unavailable:
+        print(f"провайдер недоступен на {unavailable} обращениях - они посчитаны эскалацией")
+
+    args.report.write_text(
         json.dumps(
             {
                 "classifier": classifier.model_id,
@@ -267,6 +327,9 @@ def main() -> None:
                     "class_confidence": thresholds.class_confidence,
                     "rag_confidence": thresholds.rag_confidence,
                 },
+                "confidence_sources": sorted(
+                    {p.confidence_source for p in predictions if p.confidence_source}
+                ),
                 "golden_set_size": len(golden),
                 "adversarial_size": len(adversarial),
                 "metrics": metrics,
@@ -278,7 +341,7 @@ def main() -> None:
         + "\n",
         encoding="utf-8",
     )
-    print(f"\nотчёт: {REPORT_PATH}")
+    print(f"\nотчёт: {args.report}")
 
     gated = args.gate_metrics or list(metrics)
     failed = [name for name in gated if not _passed(name, metrics[name])]

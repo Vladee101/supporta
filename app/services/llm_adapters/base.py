@@ -300,6 +300,12 @@ class BaseLLMClient:
     def _classify_by_sampling(
         self, system: str, text: str, codes: Mapping[str, str], deadline: float
     ) -> LabelProbabilities:
+        # Одна выборка - это не голосование: нужен самый вероятный ответ, а не
+        # случайный. Температура для разброса голосов имеет смысл только при k > 1.
+        temperature = self._temperature
+        if temperature is not None and self._k == 1:
+            temperature = 0.0
+
         def one_sample() -> str | None:
             try:
                 attempt = self._with_retry(
@@ -308,7 +314,7 @@ class BaseLLMClient:
                         text,
                         codes,
                         want_logprobs=False,
-                        temperature=self._temperature,
+                        temperature=temperature,
                         timeout=timeout,
                     ),
                     deadline=deadline,

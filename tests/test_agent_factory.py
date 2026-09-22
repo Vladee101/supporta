@@ -6,7 +6,7 @@ import pytest
 
 from app.agent.factory import LLMConfigError, build_classifier_and_generator
 from app.core.config import Settings
-from app.services.classifier import BaselineClassifier, LlmClassifier
+from app.services.classifier import BaselineClassifier, CrossCheckedClassifier, LlmClassifier
 from app.services.generation import LlmResponseGenerator, TemplateResponseGenerator
 from app.services.llm_adapters import GigaChatClient, OpenAICompatibleClient
 
@@ -32,10 +32,10 @@ def test_openai_compatible_builds_two_models():
             llm_generate_model="gpt://folder/yandexgpt/latest",
         )
     )
-    assert isinstance(classifier, LlmClassifier) and isinstance(generator, LlmResponseGenerator)
+    assert isinstance(generator, LlmResponseGenerator)
     assert classifier.model_id == "gpt://folder/yandexgpt-lite/latest"
     assert generator.model_id == "gpt://folder/yandexgpt/latest"
-    assert isinstance(classifier._client, OpenAICompatibleClient)
+    assert isinstance(classifier.primary._client, OpenAICompatibleClient)
 
 
 def test_gigachat_shares_one_token_provider():
@@ -48,8 +48,8 @@ def test_gigachat_shares_one_token_provider():
             llm_generate_model="GigaChat-2-Pro",
         )
     )
-    assert isinstance(classifier._client, GigaChatClient)
-    assert classifier._client._tokens is generator._client._tokens
+    assert isinstance(classifier.primary._client, GigaChatClient)
+    assert classifier.primary._client._tokens is generator._client._tokens
 
 
 @pytest.mark.parametrize(
@@ -64,3 +64,31 @@ def test_incomplete_provider_config_fails_at_startup(overrides):
     """Неполная настройка - ошибка при старте, а не эскалация каждого тикета."""
     with pytest.raises(LLMConfigError):
         build_classifier_and_generator(settings(**overrides))
+
+
+OPENAI = {
+    "llm_provider": "openai_compatible",
+    "llm_base_url": "https://routerai.ru/api/v1",
+    "llm_classify_model": "a",
+    "llm_generate_model": "b",
+}
+
+
+def test_llm_classification_is_cross_checked_by_default():
+    """ADR-012: без сверки уверенность LLM без logprobs ничего не отсекает."""
+    classifier, _ = build_classifier_and_generator(settings(**OPENAI))
+
+    assert isinstance(classifier, CrossCheckedClassifier)
+    assert isinstance(classifier.primary, LlmClassifier)
+    assert isinstance(classifier.reference, BaselineClassifier)
+
+
+def test_cross_check_can_be_disabled():
+    classifier, _ = build_classifier_and_generator(settings(**OPENAI, llm_cross_check=False))
+    assert isinstance(classifier, LlmClassifier)
+
+
+def test_threshold_below_disagreement_confidence_fails_at_startup():
+    """Порог ниже уверенности при расхождении обнулил бы сверку - это ошибка конфигурации."""
+    with pytest.raises(LLMConfigError, match="сверка ничего не отсечёт"):
+        build_classifier_and_generator(settings(**OPENAI, class_confidence_threshold=0.5))

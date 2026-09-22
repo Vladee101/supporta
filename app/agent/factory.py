@@ -14,7 +14,13 @@ from app.agent.graph import TicketGraph
 from app.agent.service import AgentService
 from app.core.config import Settings, get_settings, thresholds
 from app.core.singleton import once
-from app.services.classifier import BaselineClassifier, Classifier, LlmClassifier
+from app.services.classifier import (
+    DISAGREEMENT_CONFIDENCE,
+    BaselineClassifier,
+    Classifier,
+    CrossCheckedClassifier,
+    LlmClassifier,
+)
 from app.services.embeddings import (
     BgeM3EmbeddingProvider,
     EmbeddingProvider,
@@ -116,7 +122,17 @@ def build_classifier_and_generator(settings: Settings) -> tuple[Classifier, Resp
     if settings.llm_provider == "baseline":
         return BaselineClassifier(), TemplateResponseGenerator()
     classify_client, generate_client = build_llm_clients(settings)
-    return LlmClassifier(classify_client), LlmResponseGenerator(generate_client)
+    classifier: Classifier = LlmClassifier(classify_client)
+    if settings.llm_cross_check:
+        if settings.class_confidence_threshold <= DISAGREEMENT_CONFIDENCE:
+            # Иначе расхождение с базовой линией молча перестало бы что-либо
+            # значить: тикет с ним проходил бы порог и получал автоответ.
+            raise LLMConfigError(
+                f"CLASS_CONFIDENCE_THRESHOLD={settings.class_confidence_threshold} не выше "
+                f"уверенности при расхождении ({DISAGREEMENT_CONFIDENCE}): сверка ничего не отсечёт"
+            )
+        classifier = CrossCheckedClassifier(classifier, BaselineClassifier())
+    return classifier, LlmResponseGenerator(generate_client)
 
 
 @once

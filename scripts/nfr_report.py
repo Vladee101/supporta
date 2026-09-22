@@ -1,12 +1,14 @@
 """Отчёт «замер vs порог» по всем NFR из design document.
 
     python -m scripts.nfr_report
+    python -m scripts.nfr_report --quality eval/report_aliceai-llm-flash_cross-check.json
 
 Источники - только артефакты прогонов, никаких чисел руками:
 
 * reports/load_test_fixed.json, load_test_stress100.json, load_test_baseline.json -
   нагрузочный тест (NFR1, NFR3, NFR8);
-* eval/report.json - качество на golden set и adversarial-наборе (NFR2, NFR10);
+* отчёт eval (`--quality`, по умолчанию eval/report.json - базовая линия) -
+  качество на golden set и adversarial-наборе (NFR2, NFR10);
 * тесты - для требований, которые проверяются поведением, а не числом. Скрипт
   сверяет, что каждый упомянутый тест существует: отчёт не может сослаться на
   проверку, которой нет.
@@ -18,6 +20,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import sys
@@ -56,12 +59,25 @@ def _s(value: float | None, unit: str = " с") -> str:
     return "—" if value is None else f"{value:.2f}{unit}"
 
 
-def build() -> tuple[list[dict], list[str]]:
+BASELINE_CLASSIFIER = "baseline-keywords-v1"
+DEFAULT_QUALITY = ROOT / "eval" / "report.json"
+
+
+def _classifier_note(quality: dict) -> str:
+    if quality["classifier"] == BASELINE_CLASSIFIER:
+        return "базовая линия: LLM-провайдер не подключён, ADR-009"
+    sources = ", ".join(quality.get("confidence_sources") or ["?"])
+    return f"LLM; источник уверенности: {sources} (ADR-009, ADR-012)"
+
+
+def build(quality_path: Path = DEFAULT_QUALITY) -> tuple[list[dict], list[str], dict]:
     fixed = _load(REPORTS / "load_test_fixed.json")
     stress = _load(REPORTS / "load_test_stress100.json")
     baseline = _load(REPORTS / "load_test_baseline.json")
-    quality = _load(ROOT / "eval" / "report.json")
+    quality = _load(quality_path)
+    quality["path"] = quality_path.relative_to(ROOT).as_posix()
     q = quality["metrics"]
+    on_llm = quality["classifier"] != BASELINE_CLASSIFIER
 
     rows: list[dict] = []
 
@@ -102,7 +118,7 @@ def build() -> tuple[list[dict], list[str]]:
         f"macro-F1 {q['macro_f1_regular']:.2f}",
         PASS if recall_ok and f1_ok else FAIL,
         f"golden set {quality['golden_set_size']} тикетов, классификатор {quality['classifier']} "
-        "(базовая линия: LLM-провайдер не подключён, ADR-009)",
+        f"({_classifier_note(quality)}); отчёт `{quality['path']}`",
     )
 
     audit_p95 = fixed["audit"]["p95"]
@@ -147,8 +163,15 @@ def build() -> tuple[list[dict], list[str]]:
         "≤ $0.01–0.02 переменной стоимости",
         "—",
         NA,
-        "переменная стоимость - это LLM-вызовы, а провайдер не выбран (ADR-009). Базовая линия "
-        "стоит $0; измерение возможно только с реальным провайдером по токенам в трейсе",
+        (
+            "классификация и генерация идут через провайдера, но адаптер пока не сохраняет "
+            "расход токенов (usage) в трейсе, а генерация на golden set не прогонялась - "
+            "стоимость на тикет не из чего посчитать"
+            if on_llm
+            else "переменная стоимость - это LLM-вызовы, а провайдер не выбран (ADR-009). "
+            "Базовая линия стоит $0; измерение возможно только с реальным провайдером по "
+            "токенам в трейсе"
+        ),
     )
 
     row(
@@ -188,8 +211,8 @@ def build() -> tuple[list[dict], list[str]]:
         f"50: p95 {_s(auto_p95)}, ошибок {fixed['error_rate']:.0%}, соединений с БД ≤ "
         f"{fixed['db_connections_max']}; 100: p95 {_s(stress_p95)}, ошибок {stress['error_rate']:.0%}",
         PASS if auto_p95 <= 8 and fixed["error_rate"] == 0 else FAIL,
-        "один процесс API; потолок - пул потоков (API_WORKER_THREADS=100). Лимиты RPM/TPM "
-        "реального LLM-провайдера не проверены - их нет без провайдера",
+        "один процесс API; потолок - пул потоков (API_WORKER_THREADS=100). LLM в нагрузочном "
+        "тесте имитирован: лимиты RPM/TPM реального провайдера не проверены",
     )
 
     row(
@@ -211,15 +234,20 @@ def build() -> tuple[list[dict], list[str]]:
         "0 успешных инъекций",
         f"успешных инъекций: {q['injection_success_rate']:.0%} из {quality['adversarial_size']}",
         PASS if q["injection_success_rate"] == 0 else FAIL,
-        "adversarial-набор; маршрут выбирает код (ADR-001). Проверен против базовой линии - "
-        "на LLM-классификаторе прогон нужно повторить",
+        "adversarial-набор; маршрут выбирает код (ADR-001). "
+        + (
+            f"Проверен на LLM-классификаторе {quality['classifier']}"
+            if on_llm
+            else "Проверен против базовой линии - на LLM-классификаторе прогон нужно повторить"
+        ),
     )
 
     missing = _tests_exist([ref for r in rows for ref in r["tests"]])
-    return rows, missing
+    return rows, missing, quality
 
 
-def render(rows: list[dict]) -> str:
+def render(rows: list[dict], quality: dict) -> str:
+    on_llm = quality["classifier"] != BASELINE_CLASSIFIER
     counts = {
         status: sum(1 for r in rows if r["status"] == status)
         for status in (PASS, PARTIAL, FAIL, NA)
@@ -228,7 +256,8 @@ def render(rows: list[dict]) -> str:
         "# Отчёт по нефункциональным требованиям",
         "",
         f"Сформирован {date.today().isoformat()} скриптом `scripts/nfr_report.py` из артефактов "
-        "прогонов (`reports/`, `eval/report.json`) и тестов репозитория. Числа руками не вносятся.",
+        f"прогонов (`reports/`, `{quality['path']}`) и тестов репозитория. "
+        "Числа руками не вносятся.",
         "",
         f"**Итог:** {counts[PASS]} выполнено, {counts[PARTIAL]} частично, "
         f"{counts[FAIL]} не выполнено, {counts[NA]} не измеримо.",
@@ -267,8 +296,15 @@ def render(rows: list[dict]) -> str:
         "- Задержка LLM имитирована равномерным распределением в пределах бюджета шагов. "
         "Хвосты реального провайдера длиннее и зависят от его лимитов - прогон нужно повторить "
         "с провайдером.",
-        "- Качество (NFR2) измерено на базовой линии и синтетическом golden set без доли "
-        "публичных датасетов.",
+        (
+            f"- Качество (NFR2) измерено на {quality['classifier']} и синтетическом golden set "
+            "без доли публичных датасетов; сверка с базовой линией (ADR-012), скорее всего, "
+            "выглядит на нём лучше, чем будет на реальных обращениях: словарь писался под те "
+            "же формулировки."
+            if on_llm
+            else "- Качество (NFR2) измерено на базовой линии и синтетическом golden set без доли "
+            "публичных датасетов."
+        ),
         "- Стенд однопроцессный и локальный: сеть, отказоустойчивость Postgres и RabbitMQ "
         "не нагружались.",
     ]
@@ -277,12 +313,20 @@ def render(rows: list[dict]) -> str:
 
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    rows, missing = build()
+    parser = argparse.ArgumentParser(description="Отчёт по NFR")
+    parser.add_argument(
+        "--quality",
+        type=Path,
+        default=DEFAULT_QUALITY,
+        help="отчёт eval, из которого берутся NFR2 и NFR10",
+    )
+    args = parser.parse_args()
+    rows, missing, quality = build(args.quality.resolve())
     if missing:
         sys.exit("отчёт ссылается на несуществующие тесты: " + ", ".join(missing))
 
     out = REPORTS / "nfr_report.md"
-    out.write_text(render(rows), encoding="utf-8")
+    out.write_text(render(rows, quality), encoding="utf-8")
     for r in rows:
         print(f"{r['nfr']:6} {r['status']:14} {r['measured']}")
     print(f"\nотчёт: {out}")

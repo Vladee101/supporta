@@ -5,7 +5,13 @@ from __future__ import annotations
 import pytest
 
 from app.domain.enums import Category, ConfidenceSource, RiskLevel
-from app.services.classifier import CLASSIFIABLE, BaselineClassifier, LlmClassifier
+from app.services.classifier import (
+    CLASSIFIABLE,
+    DISAGREEMENT_CONFIDENCE,
+    BaselineClassifier,
+    CrossCheckedClassifier,
+    LlmClassifier,
+)
 from tests.fakes import FakeLLMClient
 
 baseline = BaselineClassifier()
@@ -112,3 +118,65 @@ def test_ticket_text_is_wrapped_as_data_for_the_model():
 
 def test_unclassified_is_not_a_label_offered_to_the_model():
     assert Category.UNCLASSIFIED not in CLASSIFIABLE
+
+
+# --- сверка с базовой линией (ADR-012) --------------------------------------
+
+
+def cross_checked(probabilities, **kwargs) -> CrossCheckedClassifier:
+    return CrossCheckedClassifier(
+        LlmClassifier(FakeLLMClient(probabilities, **kwargs)), BaselineClassifier()
+    )
+
+
+def test_agreement_keeps_llm_confidence():
+    result = cross_checked({"refund": 1.0}).classify("Хочу вернуть деньги за товар")
+
+    assert result.category is Category.REFUND
+    assert result.confidence == 1.0
+    assert result.confidence_source is ConfidenceSource.CROSS_CHECK
+    assert "согласна" in result.reasoning
+
+
+def test_disagreement_lowers_confidence_but_keeps_llm_category():
+    """Категорию выбирает LLM: базовая линия не должна снижать recall high-risk."""
+    result = cross_checked({"complaint": 1.0}).classify("Приложение вылетает при оплате")
+
+    assert result.category is Category.COMPLAINT
+    assert result.confidence == DISAGREEMENT_CONFIDENCE
+    assert "базовая линия: tech_issue - расходится" in result.reasoning
+
+
+def test_text_without_request_is_not_confidently_classified():
+    """Регрессия из замера: «Здравствуйте» → faq с уверенностью 5/5 и автоответ.
+
+    LLM не может выбрать UNCLASSIFIED (его нет среди меток), а базовая линия
+    на тексте без маркеров возвращает именно его - это расхождение.
+    """
+    result = cross_checked({"faq": 1.0}, source=ConfidenceSource.K_SAMPLING).classify(
+        "Здравствуйте"
+    )
+
+    assert result.category is Category.FAQ
+    assert result.confidence == DISAGREEMENT_CONFIDENCE
+
+
+def test_disagreement_never_raises_confidence():
+    result = cross_checked({"faq": 0.3, "refund": 0.2}).classify("Приложение вылетает")
+    assert result.confidence == 0.3
+
+
+def test_failed_llm_classification_is_passed_through():
+    """Провал классификации - R9; сверка не должна превращать его в уверенность."""
+    result = cross_checked({"send_auto_answer": 1.0}).classify("Хочу вернуть деньги")
+
+    assert result.category is Category.UNCLASSIFIED
+    assert result.confidence is None
+    assert result.confidence_source is None
+
+
+def test_llm_confidence_source_stays_in_the_trace():
+    result = cross_checked({"refund": 1.0}, source=ConfidenceSource.K_SAMPLING).classify(
+        "Хочу вернуть деньги"
+    )
+    assert result.reasoning.startswith("LLM (k_sampling)")

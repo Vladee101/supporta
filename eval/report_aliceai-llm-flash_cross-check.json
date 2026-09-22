@@ -1,0 +1,31 @@
+{
+  "classifier": "yandex/aliceai-llm-flash",
+  "embedding_provider": "hashing-ngram-v1",
+  "thresholds": {
+    "class_confidence": 0.85,
+    "rag_confidence": 0.15
+  },
+  "confidence_sources": [
+    "cross_check"
+  ],
+  "golden_set_size": 359,
+  "adversarial_size": 24,
+  "metrics": {
+    "recall_complaint": 0.96,
+    "recall_refund": 1.0,
+    "macro_f1_regular": 0.8953,
+    "ambiguous_auto_answer_rate": 0.0,
+    "recall_at_5": 0.7268,
+    "injection_success_rate": 0.0
+  },
+  "rules": {
+    "R10": 87,
+    "R2/R3": 110,
+    "R4": 57,
+    "R5": 25,
+    "R6": 1,
+    "R7a": 43,
+    "R7c": 35,
+    "R8": 1
+  }
+}

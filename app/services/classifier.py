@@ -1,13 +1,15 @@
 """Классификация тикета: категория + confidence + risk level.
 
-Две реализации одного протокола:
+Три реализации одного протокола:
 
 * `BaselineClassifier` - детерминированный словарный классификатор. Он не
   замена LLM, а базовая линия: метрики LLM-классификатора имеют смысл только
   в сравнении с чем-то, и он же позволяет гонять пайплайн и eval без ключей
   провайдера и без сети;
 * `LlmClassifier` - обёртка над `LLMClient` (ADR-009). Вся логика здесь,
-  вендор-специфичным остаётся только адаптер, реализующий протокол.
+  вендор-специфичным остаётся только адаптер, реализующий протокол;
+* `CrossCheckedClassifier` - LLM, сверенный с базовой линией: расхождение
+  понижает уверенность (ADR-012). Конфигурация по умолчанию для LLM.
 
 Инвариант обеих реализаций: **текст тикета - данные, а не инструкции**.
 Классификатор возвращает метку из закрытого множества; что бы ни было написано
@@ -227,4 +229,59 @@ class LlmClassifier:
             confidence_source=probabilities.source,
             model_id=probabilities.model_id,
             reasoning=probabilities.reasoning,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Сверка с базовой линией (ADR-012)
+# ---------------------------------------------------------------------------
+
+#: Уверенность при расхождении с базовой линией. Должна быть ниже порога
+#: class_confidence - это проверяет фабрика. Не None: в трейсе расхождение
+#: должно отличаться от провала классификации.
+DISAGREEMENT_CONFIDENCE = 0.5
+
+
+class CrossCheckedClassifier:
+    """LLM-классификация, сверенная с детерминированной базовой линией.
+
+    Категорию выбирает LLM: он точнее, и уступать базовой линии recall жалоб и
+    возвратов нельзя. Базовая линия только понижает уверенность, когда не
+    согласна, - и тогда Decision Engine не пускает тикет в автоответ.
+
+    Зачем: замер на golden set (ADR-012) показал, что без logprobs уверенность
+    LLM вырождается - k выборок почти всегда единогласны, в том числе на
+    ошибках, и порог class_confidence ничего не отсекает. Расхождение с
+    независимым классификатором - сигнал, который ничего не стоит: базовая
+    линия локальная и детерминированная. Она же возвращает UNCLASSIFIED на
+    тексте без запроса («Здравствуйте»), а LLM выбрать эту метку не может.
+    """
+
+    def __init__(self, primary: Classifier, reference: Classifier) -> None:
+        self.primary = primary
+        self.reference = reference
+
+    @property
+    def model_id(self) -> str:
+        return self.primary.model_id
+
+    def classify(self, text: str) -> ClassificationResult:
+        result = self.primary.classify(text)
+        if result.failed or result.confidence is None:
+            return result  # провал классификации - R9, сверять нечего
+
+        reference = self.reference.classify(text)
+        agree = reference.category is result.category
+        confidence = result.confidence if agree else min(result.confidence, DISAGREEMENT_CONFIDENCE)
+        source = result.confidence_source.value if result.confidence_source else "none"
+        verdict = "согласна" if agree else "расходится"
+        return ClassificationResult(
+            category=result.category,
+            confidence=round(confidence, 4),
+            confidence_source=ConfidenceSource.CROSS_CHECK,
+            model_id=result.model_id,
+            reasoning=(
+                f"LLM ({source}): {result.reasoning}; "
+                f"базовая линия: {reference.category.value} - {verdict}"
+            ),
         )

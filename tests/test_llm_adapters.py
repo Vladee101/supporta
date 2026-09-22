@@ -206,6 +206,15 @@ def test_sampling_requests_carry_temperature_and_no_logprobs():
         assert "logprobs" not in body
 
 
+def test_single_sample_is_greedy_not_random():
+    """k = 1 - не голосование: случайная выборка только добавила бы шум."""
+    recorder = Recorder(oa_label("2"))
+    openai_client(
+        recorder, confidence_mode="k_sampling", k_samples=1, sampling_temperature=0.7
+    ).classify("s", "t", LABELS)
+    assert recorder.bodies()[0]["temperature"] == 0.0
+
+
 def test_temperature_can_be_omitted_for_providers_that_reject_it():
     recorder = Recorder(oa_label("2"))
     openai_client(

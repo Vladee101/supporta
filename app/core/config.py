@@ -67,7 +67,11 @@ class Settings(BaseSettings):
     llm_generate_model: str = ""
     #: auto - logprobs, если провайдер их отдаёт, иначе k-sampling (ADR-009).
     llm_confidence_mode: Literal["auto", "logprobs", "k_sampling"] = "auto"
-    llm_k_samples: int = Field(default=5, ge=1, le=15)
+    #: По замеру (ADR-012) k > 1 без logprobs почти не даёт разброса голосов:
+    #: сигнал уверенности даёт сверка с базовой линией, а k лишь умножает цену.
+    llm_k_samples: int = Field(default=1, ge=1, le=15)
+    #: Сверка категории LLM с базовой линией: расхождение понижает уверенность.
+    llm_cross_check: bool = True
     #: None - не передавать температуру (для провайдеров, которые её не принимают).
     llm_sampling_temperature: float | None = 0.7
     # NFR6: повторы и общий дедлайн вызова.

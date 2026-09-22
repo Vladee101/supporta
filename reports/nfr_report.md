@@ -1,13 +1,13 @@
 # Отчёт по нефункциональным требованиям
 
-Сформирован 2026-09-19 скриптом `scripts/nfr_report.py` из артефактов прогонов (`reports/`, `eval/report.json`) и тестов репозитория. Числа руками не вносятся.
+Сформирован 2026-09-22 скриптом `scripts/nfr_report.py` из артефактов прогонов (`reports/`, `eval/report_aliceai-llm-flash_cross-check.json`) и тестов репозитория. Числа руками не вносятся.
 
-**Итог:** 8 выполнено, 0 частично, 1 не выполнено, 1 не измеримо.
+**Итог:** 9 выполнено, 0 частично, 0 не выполнено, 1 не измеримо.
 
 | NFR | Требование | Порог | Замер | Статус |
 | --- | --- | --- | --- | --- |
 | NFR1 | Задержка | автоответ ≤ 8 с, до оператора ≤ 15 с (p95) | автоответ p95 6.30 с; до очереди оператора p95 6.78 с | **выполнено** |
-| NFR2 | Качество классификации | recall high-risk ≥ 0.95, macro-F1 ≥ 0.85 | recall жалоба 0.66, возврат 0.90; macro-F1 0.80 | **не выполнено** |
+| NFR2 | Качество классификации | recall high-risk ≥ 0.95, macro-F1 ≥ 0.85 | recall жалоба 0.96, возврат 1.00; macro-F1 0.90 | **выполнено** |
 | NFR3 | Проверяемость | 100% решений трассируемы, трейс ≤ 2 с | трейс p95 0.01 с; rule_id, оба confidence, версии документов - в каждом решении | **выполнено** |
 | NFR4 | Безопасность и приватность | PII маскируется; хранение ≤ 90 дней; чужой тикет недоступен | маскирование, защита от IDOR и retention проверены; открытые тикеты старше срока не вычищаются, а фиксируются как нарушение | **выполнено** |
 | NFR5 | Стоимость на тикет | ≤ $0.01–0.02 переменной стоимости | — | **не измеримо** |
@@ -21,7 +21,7 @@
 
 **NFR1.** нагрузочный тест, 50 одновременных × 3 волны, LLM имитирован по бюджету (2000/4500 мс). До исправлений: p95 автоответа 12.98 с.
 
-**NFR2.** golden set 359 тикетов, классификатор baseline-keywords-v1 (базовая линия: LLM-провайдер не подключён, ADR-009).
+**NFR2.** golden set 359 тикетов, классификатор yandex/aliceai-llm-flash (LLM; источник уверенности: cross_check (ADR-009, ADR-012)); отчёт `eval/report_aliceai-llm-flash_cross-check.json`.
 
 **NFR3.** время - нагрузочный тест; полнота трейса - интеграционные тесты.
 Тесты: `test_pipeline_integration.py::test_auto_answer_is_persisted_with_full_trace`, `test_pipeline_integration.py::test_retrievals_are_linked_to_document_versions`, `test_audit_api_integration.py::test_audit_shows_both_clarification_iterations`.
@@ -29,7 +29,7 @@
 **NFR4.** retention вычищает персональные данные закрытых тикетов старше 90 дней, сохраняя audit_log и агрегаты; строки не удаляются, иначе каскад унёс бы аудит. Открытый тикет старше срока - предупреждение шедулера, а не вычистка рабочих данных оператора.
 Тесты: `test_retention_integration.py::test_expired_closed_ticket_loses_personal_data`, `test_retention_integration.py::test_audit_and_metrics_survive_scrub`, `test_retention_integration.py::test_open_expired_ticket_is_reported_not_scrubbed`, `test_pipeline_integration.py::test_pii_never_reaches_audit_log`, `test_graph.py::test_pii_is_redacted_before_it_reaches_retriever`, `test_tickets_api_integration.py::test_foreign_ticket_cannot_be_read_with_own_token`, `test_tickets_api_integration.py::test_operator_token_is_not_a_ticket_token`.
 
-**NFR5.** переменная стоимость - это LLM-вызовы, а провайдер не выбран (ADR-009). Базовая линия стоит $0; измерение возможно только с реальным провайдером по токенам в трейсе.
+**NFR5.** классификация и генерация идут через провайдера, но адаптер пока не сохраняет расход токенов (usage) в трейсе, а генерация на golden set не прогонялась - стоимость на тикет не из чего посчитать.
 
 **NFR6.** адаптеры LLM (ADR-009) на имитированном провайдере (httpx.MockTransport, управляемое время); на живом ключе не проверялось.
 Тесты: `test_llm_adapters.py::test_retries_are_capped_at_three_then_escalation`, `test_llm_adapters.py::test_retry_respects_overall_deadline`, `test_llm_adapters.py::test_client_errors_are_not_retried`, `test_tickets_api_integration.py::test_llm_outage_escalates_instead_of_failing`, `test_graph.py::test_draft_failure_keeps_escalation_reason`, `test_graph.py::test_low_rag_confidence_escalates_instead_of_answering`.
@@ -37,12 +37,12 @@
 **NFR7.** интеграционные тесты API консоли.
 Тесты: `test_escalations_api_integration.py::test_edit_stores_draft_and_final_for_diff`.
 
-**NFR8.** один процесс API; потолок - пул потоков (API_WORKER_THREADS=100). Лимиты RPM/TPM реального LLM-провайдера не проверены - их нет без провайдера.
+**NFR8.** один процесс API; потолок - пул потоков (API_WORKER_THREADS=100). LLM в нагрузочном тесте имитирован: лимиты RPM/TPM реального провайдера не проверены.
 
 **NFR9.** юнит-тесты Decision Engine и интеграционные тесты шедулера.
 Тесты: `test_decision_engine.py::test_invariant_4_clarification_only_on_first_iteration`, `test_scheduler_integration.py::test_silent_client_is_escalated_after_timeout`.
 
-**NFR10.** adversarial-набор; маршрут выбирает код (ADR-001). Проверен против базовой линии - на LLM-классификаторе прогон нужно повторить.
+**NFR10.** adversarial-набор; маршрут выбирает код (ADR-001). Проверен на LLM-классификаторе yandex/aliceai-llm-flash.
 
 ## Что изменилось по итогам нагрузочного теста
 
@@ -55,5 +55,5 @@
 ## Ограничения замеров
 
 - Задержка LLM имитирована равномерным распределением в пределах бюджета шагов. Хвосты реального провайдера длиннее и зависят от его лимитов - прогон нужно повторить с провайдером.
-- Качество (NFR2) измерено на базовой линии и синтетическом golden set без доли публичных датасетов.
+- Качество (NFR2) измерено на yandex/aliceai-llm-flash и синтетическом golden set без доли публичных датасетов; сверка с базовой линией (ADR-012), скорее всего, выглядит на нём лучше, чем будет на реальных обращениях: словарь писался под те же формулировки.
 - Стенд однопроцессный и локальный: сеть, отказоустойчивость Postgres и RabbitMQ не нагружались.

@@ -95,6 +95,8 @@ class ConfidenceSource(StrEnum):
     K_SAMPLING = "k_sampling"
     #: Словарная базовая линия - своя шкала, пороги LLM к ней неприменимы.
     BASELINE = "baseline"
+    #: Уверенность LLM, пониженная при расхождении с базовой линией (ADR-012).
+    CROSS_CHECK = "cross_check"
 
 
 class OperatorRole(StrEnum):
