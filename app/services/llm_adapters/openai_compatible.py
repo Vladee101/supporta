@@ -21,6 +21,7 @@ from typing import Any, Literal
 
 import httpx
 
+from app.services import llm_usage
 from app.services.llm import ProviderContractError
 from app.services.llm_adapters.base import (
     LABEL_MAX_TOKENS,
@@ -67,6 +68,8 @@ class OpenAICompatibleClient(BaseLLMClient):
         )
         try:
             payload = response.json()
+            # Вызов оплачен, даже если дальше ответ не пройдёт проверку контракта.
+            llm_usage.record(self._model, payload.get("usage"))
             choice = payload["choices"][0]
         except (ValueError, KeyError, IndexError, TypeError) as exc:
             raise ProviderContractError(

@@ -1,0 +1,718 @@
+{
+  "provider": "openai_compatible",
+  "classify_model": "yandex/aliceai-llm-flash",
+  "generate_model": "yandex/aliceai-llm-flash",
+  "k_samples": 1,
+  "cross_check": true,
+  "embedding_provider": "BAAI/bge-m3",
+  "rag_threshold": 0.6,
+  "rub_per_usd": 84.0954,
+  "nfr5_usd": 0.02,
+  "nfr5_met": true,
+  "sample": 41,
+  "seed": 7,
+  "summary": {
+    "cost_rub": {
+      "mean": 0.0721,
+      "median": 0.0936,
+      "p95": 0.108,
+      "max": 0.1103
+    },
+    "cost_usd": {
+      "mean": 0.000857,
+      "median": 0.001113,
+      "p95": 0.001284,
+      "max": 0.001312
+    },
+    "calls_per_ticket": {
+      "mean": 1.6341,
+      "median": 2.0,
+      "p95": 2.0,
+      "max": 2.0
+    },
+    "tokens_per_ticket": {
+      "mean": 531.2683,
+      "median": 683.0,
+      "p95": 759.0,
+      "max": 784.0
+    },
+    "seconds_per_ticket": {
+      "mean": 1.1483,
+      "median": 0.993,
+      "p95": 1.885,
+      "max": 4.696
+    },
+    "by_route": {
+      "автоответ": {
+        "tickets": 6,
+        "mean_cost_rub": 0.0966
+      },
+      "без генерации": {
+        "tickets": 16,
+        "mean_cost_rub": 0.032
+      },
+      "эскалация с черновиком": {
+        "tickets": 19,
+        "mean_cost_rub": 0.0982
+      }
+    }
+  },
+  "tickets": [
+    {
+      "id": "g0237",
+      "category": "complaint",
+      "action": "A2",
+      "rule_id": "R2/R3",
+      "with_draft": false,
+      "seconds": 4.696,
+      "calls": 2,
+      "prompt_tokens": 456,
+      "completion_tokens": 6,
+      "cost": 0.060655,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0226",
+      "category": "complaint",
+      "action": "A2",
+      "rule_id": "R10",
+      "with_draft": true,
+      "seconds": 1.208,
+      "calls": 2,
+      "prompt_tokens": 680,
+      "completion_tokens": 58,
+      "cost": 0.103165,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0242",
+      "category": "complaint",
+      "action": "A2",
+      "rule_id": "R2/R3",
+      "with_draft": false,
+      "seconds": 0.53,
+      "calls": 1,
+      "prompt_tokens": 226,
+      "completion_tokens": 3,
+      "cost": 0.030068,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "g0258",
+      "category": "complaint",
+      "action": "A2",
+      "rule_id": "R2/R3",
+      "with_draft": false,
+      "seconds": 0.525,
+      "calls": 1,
+      "prompt_tokens": 227,
+      "completion_tokens": 3,
+      "cost": 0.030198,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "c023",
+      "category": "complaint",
+      "action": "A2",
+      "rule_id": "R2/R3",
+      "with_draft": false,
+      "seconds": 0.648,
+      "calls": 1,
+      "prompt_tokens": 222,
+      "completion_tokens": 3,
+      "cost": 0.02955,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "c024",
+      "category": "complaint",
+      "action": "A2",
+      "rule_id": "R2/R3",
+      "with_draft": false,
+      "seconds": 0.775,
+      "calls": 1,
+      "prompt_tokens": 222,
+      "completion_tokens": 3,
+      "cost": 0.02955,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "g0058",
+      "category": "faq",
+      "action": "A1",
+      "rule_id": "R4",
+      "with_draft": true,
+      "seconds": 1.875,
+      "calls": 2,
+      "prompt_tokens": 682,
+      "completion_tokens": 21,
+      "cost": 0.093833,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0002",
+      "category": "faq",
+      "action": "A1",
+      "rule_id": "R4",
+      "with_draft": true,
+      "seconds": 2.025,
+      "calls": 2,
+      "prompt_tokens": 668,
+      "completion_tokens": 31,
+      "cost": 0.094611,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0036",
+      "category": "faq",
+      "action": "A2",
+      "rule_id": "R5",
+      "with_draft": true,
+      "seconds": 1.432,
+      "calls": 2,
+      "prompt_tokens": 662,
+      "completion_tokens": 31,
+      "cost": 0.093833,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0064",
+      "category": "faq",
+      "action": "A1",
+      "rule_id": "R4",
+      "with_draft": true,
+      "seconds": 0.96,
+      "calls": 2,
+      "prompt_tokens": 692,
+      "completion_tokens": 31,
+      "cost": 0.097721,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "c008",
+      "category": "faq",
+      "action": "A2",
+      "rule_id": "R7c",
+      "with_draft": true,
+      "seconds": 1.19,
+      "calls": 2,
+      "prompt_tokens": 626,
+      "completion_tokens": 56,
+      "cost": 0.095648,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0054",
+      "category": "faq",
+      "action": "A2",
+      "rule_id": "R5",
+      "with_draft": true,
+      "seconds": 1.003,
+      "calls": 2,
+      "prompt_tokens": 680,
+      "completion_tokens": 21,
+      "cost": 0.093574,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0017",
+      "category": "faq",
+      "action": "A1",
+      "rule_id": "R4",
+      "with_draft": true,
+      "seconds": 1.267,
+      "calls": 2,
+      "prompt_tokens": 636,
+      "completion_tokens": 51,
+      "cost": 0.095648,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "c005",
+      "category": "faq",
+      "action": "A2",
+      "rule_id": "R5",
+      "with_draft": true,
+      "seconds": 1.625,
+      "calls": 2,
+      "prompt_tokens": 652,
+      "completion_tokens": 31,
+      "cost": 0.092537,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0001",
+      "category": "faq",
+      "action": "A2",
+      "rule_id": "R5",
+      "with_draft": true,
+      "seconds": 1.291,
+      "calls": 2,
+      "prompt_tokens": 658,
+      "completion_tokens": 17,
+      "cost": 0.089686,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0045",
+      "category": "faq",
+      "action": "A1",
+      "rule_id": "R4",
+      "with_draft": true,
+      "seconds": 0.959,
+      "calls": 2,
+      "prompt_tokens": 680,
+      "completion_tokens": 29,
+      "cost": 0.095648,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0043",
+      "category": "faq",
+      "action": "A1",
+      "rule_id": "R4",
+      "with_draft": true,
+      "seconds": 1.46,
+      "calls": 2,
+      "prompt_tokens": 708,
+      "completion_tokens": 40,
+      "cost": 0.102128,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "c047",
+      "category": "order_status",
+      "action": "A2",
+      "rule_id": "R10",
+      "with_draft": true,
+      "seconds": 0.962,
+      "calls": 2,
+      "prompt_tokens": 650,
+      "completion_tokens": 18,
+      "cost": 0.088908,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0113",
+      "category": "order_status",
+      "action": "A2",
+      "rule_id": "R10",
+      "with_draft": true,
+      "seconds": 0.862,
+      "calls": 2,
+      "prompt_tokens": 702,
+      "completion_tokens": 22,
+      "cost": 0.096685,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0094",
+      "category": "order_status",
+      "action": "A2",
+      "rule_id": "R10",
+      "with_draft": true,
+      "seconds": 0.957,
+      "calls": 2,
+      "prompt_tokens": 680,
+      "completion_tokens": 23,
+      "cost": 0.094092,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0153",
+      "category": "order_status",
+      "action": "A2",
+      "rule_id": "R10",
+      "with_draft": true,
+      "seconds": 1.249,
+      "calls": 2,
+      "prompt_tokens": 704,
+      "completion_tokens": 34,
+      "cost": 0.100054,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0137",
+      "category": "order_status",
+      "action": "A2",
+      "rule_id": "R10",
+      "with_draft": true,
+      "seconds": 1.528,
+      "calls": 2,
+      "prompt_tokens": 700,
+      "completion_tokens": 33,
+      "cost": 0.099277,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "c019",
+      "category": "order_status",
+      "action": "A2",
+      "rule_id": "R10",
+      "with_draft": true,
+      "seconds": 1.749,
+      "calls": 2,
+      "prompt_tokens": 685,
+      "completion_tokens": 74,
+      "cost": 0.107961,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0155",
+      "category": "order_status",
+      "action": "A2",
+      "rule_id": "R10",
+      "with_draft": true,
+      "seconds": 1.334,
+      "calls": 2,
+      "prompt_tokens": 712,
+      "completion_tokens": 23,
+      "cost": 0.09824,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0098",
+      "category": "order_status",
+      "action": "A2",
+      "rule_id": "R10",
+      "with_draft": true,
+      "seconds": 1.506,
+      "calls": 2,
+      "prompt_tokens": 717,
+      "completion_tokens": 67,
+      "cost": 0.110293,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0111",
+      "category": "order_status",
+      "action": "A2",
+      "rule_id": "R10",
+      "with_draft": true,
+      "seconds": 1.885,
+      "calls": 2,
+      "prompt_tokens": 698,
+      "completion_tokens": 74,
+      "cost": 0.109645,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0300",
+      "category": "refund",
+      "action": "A2",
+      "rule_id": "R2/R3",
+      "with_draft": false,
+      "seconds": 0.612,
+      "calls": 1,
+      "prompt_tokens": 224,
+      "completion_tokens": 3,
+      "cost": 0.029809,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "g0309",
+      "category": "refund",
+      "action": "A2",
+      "rule_id": "R2/R3",
+      "with_draft": false,
+      "seconds": 0.709,
+      "calls": 1,
+      "prompt_tokens": 228,
+      "completion_tokens": 3,
+      "cost": 0.030327,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "g0297",
+      "category": "refund",
+      "action": "A2",
+      "rule_id": "R2/R3",
+      "with_draft": false,
+      "seconds": 0.717,
+      "calls": 1,
+      "prompt_tokens": 231,
+      "completion_tokens": 3,
+      "cost": 0.030716,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "c030",
+      "category": "refund",
+      "action": "A2",
+      "rule_id": "R2/R3",
+      "with_draft": false,
+      "seconds": 0.536,
+      "calls": 1,
+      "prompt_tokens": 220,
+      "completion_tokens": 3,
+      "cost": 0.02929,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "g0296",
+      "category": "refund",
+      "action": "A2",
+      "rule_id": "R2/R3",
+      "with_draft": false,
+      "seconds": 0.643,
+      "calls": 1,
+      "prompt_tokens": 227,
+      "completion_tokens": 3,
+      "cost": 0.030198,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "g0307",
+      "category": "refund",
+      "action": "A2",
+      "rule_id": "R2/R3",
+      "with_draft": false,
+      "seconds": 0.669,
+      "calls": 1,
+      "prompt_tokens": 233,
+      "completion_tokens": 3,
+      "cost": 0.030975,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "g0205",
+      "category": "tech_issue",
+      "action": "A3",
+      "rule_id": "R7a",
+      "with_draft": false,
+      "seconds": 0.574,
+      "calls": 1,
+      "prompt_tokens": 226,
+      "completion_tokens": 3,
+      "cost": 0.030068,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "c040",
+      "category": "tech_issue",
+      "action": "A3",
+      "rule_id": "R7a",
+      "with_draft": false,
+      "seconds": 0.58,
+      "calls": 1,
+      "prompt_tokens": 223,
+      "completion_tokens": 3,
+      "cost": 0.029679,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "g0183",
+      "category": "tech_issue",
+      "action": "A3",
+      "rule_id": "R7a",
+      "with_draft": false,
+      "seconds": 0.488,
+      "calls": 1,
+      "prompt_tokens": 231,
+      "completion_tokens": 3,
+      "cost": 0.030716,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "c039",
+      "category": "tech_issue",
+      "action": "A2",
+      "rule_id": "R10",
+      "with_draft": true,
+      "seconds": 1.261,
+      "calls": 2,
+      "prompt_tokens": 664,
+      "completion_tokens": 60,
+      "cost": 0.10161,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "g0172",
+      "category": "tech_issue",
+      "action": "A3",
+      "rule_id": "R7a",
+      "with_draft": false,
+      "seconds": 0.531,
+      "calls": 1,
+      "prompt_tokens": 219,
+      "completion_tokens": 3,
+      "cost": 0.029161,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "g0192",
+      "category": "tech_issue",
+      "action": "A3",
+      "rule_id": "R7a",
+      "with_draft": false,
+      "seconds": 0.509,
+      "calls": 1,
+      "prompt_tokens": 228,
+      "completion_tokens": 3,
+      "cost": 0.030327,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 1
+      }
+    },
+    {
+      "id": "g0208",
+      "category": "tech_issue",
+      "action": "A2",
+      "rule_id": "R7c",
+      "with_draft": true,
+      "seconds": 1.219,
+      "calls": 2,
+      "prompt_tokens": 668,
+      "completion_tokens": 62,
+      "cost": 0.102647,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "c043",
+      "category": "tech_issue",
+      "action": "A2",
+      "rule_id": "R7c",
+      "with_draft": true,
+      "seconds": 1.538,
+      "calls": 2,
+      "prompt_tokens": 662,
+      "completion_tokens": 63,
+      "cost": 0.102128,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    },
+    {
+      "id": "c044",
+      "category": "unclassified",
+      "action": "A2",
+      "rule_id": "R6",
+      "with_draft": true,
+      "seconds": 0.993,
+      "calls": 2,
+      "prompt_tokens": 642,
+      "completion_tokens": 10,
+      "cost": 0.085798,
+      "calls_without_cost": 0,
+      "by_model": {
+        "yandex/aliceai-llm-flash": 2
+      }
+    }
+  ]
+}

@@ -20,6 +20,7 @@
 
 from __future__ import annotations
 
+import contextvars
 import logging
 import math
 import random
@@ -326,8 +327,13 @@ class BaseLLMClient:
             return attempt.text
 
         # Выборки параллельно: задержка ≈ одному вызову, а не k (бюджет NFR1).
+        # Каждая выборка - в копии контекста: иначе потоки пула не видят счётчик
+        # расхода тикета (llm_usage), и k-кратная стоимость выпала бы из учёта.
         with ThreadPoolExecutor(max_workers=self._k) as pool:
-            results = list(pool.map(lambda _: one_sample(), range(self._k)))
+            futures = [
+                pool.submit(contextvars.copy_context().run, one_sample) for _ in range(self._k)
+            ]
+            results = [future.result() for future in futures]
 
         answers = [answer for answer in results if answer is not None]
         if not answers:

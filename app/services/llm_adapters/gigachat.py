@@ -25,6 +25,7 @@ from typing import Any
 
 import httpx
 
+from app.services import llm_usage
 from app.services.llm import LLMUnavailableError, ProviderContractError
 from app.services.llm_adapters.base import (
     LABEL_MAX_TOKENS,
@@ -137,11 +138,15 @@ class GigaChatClient(BaseLLMClient):
                     continue
                 raise
             try:
-                return response.json()
+                payload = response.json()
             except ValueError as exc:
                 raise ProviderContractError(
                     f"ответ GigaChat не JSON: {response.text[:300]}"
                 ) from exc
+            # Вызов оплачен, даже если дальше ответ не пройдёт проверку контракта.
+            usage = payload.get("usage") if isinstance(payload, dict) else None
+            llm_usage.record(self._model, usage)
+            return payload
         raise LLMUnavailableError("GigaChat отклонил обновлённый токен")
 
     def _body(self, system: str, user: str, options: dict[str, Any]) -> dict[str, Any]:

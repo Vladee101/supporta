@@ -219,6 +219,9 @@ class AgentService:
                 else None
             ),
             "generator_model": outcome.draft.model_id if outcome.draft else None,
+            # SLI «стоимость на тикет» (NFR5): расход считается по факту ответов
+            # провайдера, а не оценкой по прайсу.
+            "llm_usage": outcome.llm_usage,
             "sources": list(outcome.draft.sources) if outcome.draft else [],
             "retrieved": [
                 {

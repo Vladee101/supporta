@@ -1,12 +1,13 @@
 """Отчёт «замер vs порог» по всем NFR из design document.
 
     python -m scripts.nfr_report
-    python -m scripts.nfr_report --quality eval/report_aliceai-llm-flash_cross-check.json
+    python -m scripts.nfr_report --quality eval/report_aliceai-llm-flash_cross-check.json         --cost reports/llm_cost_yandex_aliceai-llm-flash.json
 
 Источники - только артефакты прогонов, никаких чисел руками:
 
 * reports/load_test_fixed.json, load_test_stress100.json, load_test_baseline.json -
   нагрузочный тест (NFR1, NFR3, NFR8);
+* замер стоимости (`--cost`, scripts.measure_cost) - NFR5;
 * отчёт eval (`--quality`, по умолчанию eval/report.json - базовая линия) -
   качество на golden set и adversarial-наборе (NFR2, NFR10);
 * тесты - для требований, которые проверяются поведением, а не числом. Скрипт
@@ -70,7 +71,9 @@ def _classifier_note(quality: dict) -> str:
     return f"LLM; источник уверенности: {sources} (ADR-009, ADR-012)"
 
 
-def build(quality_path: Path = DEFAULT_QUALITY) -> tuple[list[dict], list[str], dict]:
+def build(
+    quality_path: Path = DEFAULT_QUALITY, cost_path: Path | None = None
+) -> tuple[list[dict], list[str], dict]:
     fixed = _load(REPORTS / "load_test_fixed.json")
     stress = _load(REPORTS / "load_test_stress100.json")
     baseline = _load(REPORTS / "load_test_baseline.json")
@@ -157,22 +160,43 @@ def build(quality_path: Path = DEFAULT_QUALITY) -> tuple[list[dict], list[str], 
         ],
     )
 
-    row(
-        "NFR5",
-        "Стоимость на тикет",
-        "≤ $0.01–0.02 переменной стоимости",
-        "—",
-        NA,
-        (
-            "классификация и генерация идут через провайдера, но адаптер пока не сохраняет "
-            "расход токенов (usage) в трейсе, а генерация на golden set не прогонялась - "
-            "стоимость на тикет не из чего посчитать"
-            if on_llm
-            else "переменная стоимость - это LLM-вызовы, а провайдер не выбран (ADR-009). "
-            "Базовая линия стоит $0; измерение возможно только с реальным провайдером по "
-            "токенам в трейсе"
-        ),
-    )
+    cost = _load(cost_path) if cost_path else None
+    if cost:
+        usd, rub = cost["summary"]["cost_usd"], cost["summary"]["cost_rub"]
+        routes = "; ".join(
+            f"{route} - {value['mean_cost_rub']:.3f} ₽ ({value['tickets']})"
+            for route, value in cost["summary"]["by_route"].items()
+        )
+        row(
+            "NFR5",
+            "Стоимость на тикет",
+            "≤ $0.01–0.02 переменной стоимости",
+            f"p95 ${usd['p95']:.4f} ({rub['p95']:.3f} ₽), среднее ${usd['mean']:.4f}",
+            PASS if cost["nfr5_met"] else FAIL,
+            f"{cost['sample']} обращений golden set через полный граф агента на "
+            f"{cost['generate_model']} (k = {cost['k_samples']}, сверка с базовой линией, "
+            f"{cost['embedding_provider']}, τ_rag = {cost['rag_threshold']}); расход - из "
+            f"`usage` ответов провайдера, тем же счётчиком, что пишет SLI в audit_log. "
+            f"По маршрутам: {routes}. Курс {cost['rub_per_usd']} ₽/$ (ЦБ РФ) - допущение "
+            "замера. Доли маршрутов - как в golden set, а не в реальном потоке",
+        )
+    else:
+        row(
+            "NFR5",
+            "Стоимость на тикет",
+            "≤ $0.01–0.02 переменной стоимости",
+            "—",
+            NA,
+            (
+                "классификация и генерация идут через провайдера, но адаптер пока не сохраняет "
+                "расход токенов (usage) в трейсе, а генерация на golden set не прогонялась - "
+                "стоимость на тикет не из чего посчитать"
+                if on_llm
+                else "переменная стоимость - это LLM-вызовы, а провайдер не выбран (ADR-009). "
+                "Базовая линия стоит $0; измерение возможно только с реальным провайдером по "
+                "токенам в трейсе"
+            ),
+        )
 
     row(
         "NFR6",
@@ -243,6 +267,7 @@ def build(quality_path: Path = DEFAULT_QUALITY) -> tuple[list[dict], list[str], 
     )
 
     missing = _tests_exist([ref for r in rows for ref in r["tests"]])
+    quality["cost"] = cost
     return rows, missing, quality
 
 
@@ -293,9 +318,17 @@ def render(rows: list[dict], quality: dict) -> str:
         "",
         "## Ограничения замеров",
         "",
-        "- Задержка LLM имитирована равномерным распределением в пределах бюджета шагов. "
-        "Хвосты реального провайдера длиннее и зависят от его лимитов - прогон нужно повторить "
-        "с провайдером.",
+        (
+            "- Задержка LLM в нагрузочном тесте имитирована в пределах бюджета шагов. На "
+            f"реальном провайдере без нагрузки ({quality['cost']['generate_model']}, "
+            f"тикетов подряд: {quality['cost']['sample']}) p95 обработки тикета - "
+            f"{quality['cost']['summary']['seconds_per_ticket']['p95']:.1f} с; под нагрузкой "
+            "и с лимитами RPM/TPM провайдера не проверялось."
+            if quality.get("cost")
+            else "- Задержка LLM имитирована равномерным распределением в пределах бюджета "
+            "шагов. Хвосты реального провайдера длиннее и зависят от его лимитов - прогон "
+            "нужно повторить с провайдером."
+        ),
         (
             f"- Качество (NFR2) измерено на {quality['classifier']} и синтетическом golden set "
             "без доли публичных датасетов; сверка с базовой линией (ADR-012), скорее всего, "
@@ -320,8 +353,16 @@ def main() -> None:
         default=DEFAULT_QUALITY,
         help="отчёт eval, из которого берутся NFR2 и NFR10",
     )
+    parser.add_argument(
+        "--cost",
+        type=Path,
+        default=None,
+        help="отчёт scripts.measure_cost, из которого берётся NFR5",
+    )
     args = parser.parse_args()
-    rows, missing, quality = build(args.quality.resolve())
+    rows, missing, quality = build(
+        args.quality.resolve(), args.cost.resolve() if args.cost else None
+    )
     if missing:
         sys.exit("отчёт ссылается на несуществующие тесты: " + ", ".join(missing))
 

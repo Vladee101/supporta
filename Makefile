@@ -73,4 +73,4 @@ loadtest:
 	$(PY) -m scripts.load_test --env-file loadtest.env --label fixed
 
 nfr-report:
-	$(PY) -m scripts.nfr_report --quality eval/report_aliceai-llm-flash_cross-check.json
+	$(PY) -m scripts.nfr_report --quality eval/report_aliceai-llm-flash_cross-check.json --cost reports/llm_cost_yandex_aliceai-llm-flash.json

@@ -86,6 +86,9 @@ def test_auto_answer_is_persisted_with_full_trace(db_session, indexed_kb, servic
     assert audit.rag_confidence is not None
     assert audit.trace_id == result.trace_id
     assert audit.payload["retrieved"], "в трейсе должны быть использованные документы"
+    # SLI «стоимость на тикет» (NFR5): расход LLM - часть трейса; базовая линия не тратит.
+    assert audit.payload["llm_usage"]["calls"] == 0
+    assert audit.payload["llm_usage"]["cost"] == 0.0
 
     reply = db_session.scalars(
         select(Message).where(Message.ticket_id == ticket.id, Message.sender == "agent")

@@ -28,6 +28,7 @@ from sqlalchemy.orm import Session
 from app.db.base import release_connection
 from app.domain.decision import Decision, DecisionInput, Thresholds, decide
 from app.domain.enums import HIGH_RISK_CATEGORIES, Action, Category
+from app.services import llm_usage
 from app.services.classifier import ClassificationResult, Classifier
 from app.services.generation import Draft, ResponseGenerator
 from app.services.llm import LLMUnavailableError
@@ -66,6 +67,8 @@ class AgentOutcome:
     retrieval: RetrievalResult | None
     draft: Draft | None
     reply_text: str | None
+    #: Расход LLM на этот проход графа (NFR5): вызовы, токены, стоимость от провайдера.
+    llm_usage: dict[str, Any] | None = None
 
     @property
     def category(self) -> Category:
@@ -184,14 +187,15 @@ class TicketGraph:
         iteration: int = 0,
         human_requested: bool = False,
     ) -> AgentOutcome:
-        final: AgentState = self._graph.invoke(
-            {
-                "ticket_text": ticket_text,
-                "iteration": iteration,
-                "human_requested": human_requested,
-                "session": session,
-            }
-        )
+        with llm_usage.metered() as meter:
+            final: AgentState = self._graph.invoke(
+                {
+                    "ticket_text": ticket_text,
+                    "iteration": iteration,
+                    "human_requested": human_requested,
+                    "session": session,
+                }
+            )
         return AgentOutcome(
             decision=final["decision"],
             redaction=final["redaction"],
@@ -199,4 +203,5 @@ class TicketGraph:
             retrieval=final.get("retrieval"),
             draft=final.get("draft"),
             reply_text=final.get("reply_text"),
+            llm_usage=meter.snapshot(),
         )
