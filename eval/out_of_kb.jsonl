@@ -1,0 +1,36 @@
+{"id": "o001", "text": "Есть ли у вас подарочные сертификаты?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o002", "text": "Можно ли оформить доставку в Казахстан?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o003", "text": "Доставляете ли вы заказы в Европу?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o004", "text": "Как начисляются бонусные баллы за покупки?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o005", "text": "Сколько баллов можно списать при оплате заказа?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o006", "text": "Можно ли купить товар в рассрочку?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o007", "text": "Оформляете ли вы кредит на покупку техники?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o008", "text": "Работаете ли вы с оптовыми покупателями?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o009", "text": "Есть ли у вас вакансии курьеров?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o010", "text": "Когда снова появится в наличии кофемашина, которой сейчас нет?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o011", "text": "Можно ли заказать сборку шкафа после доставки?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o012", "text": "Устанавливаете ли вы кондиционеры?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o013", "text": "Принимаете ли вы старую технику по трейд-ину?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o014", "text": "Есть ли у вас шоурум, где можно посмотреть диван вживую?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o015", "text": "Упаковываете ли вы заказ как подарок?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o016", "text": "Где посмотреть таблицу размеров для кроссовок?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o017", "text": "Снизите ли вы цену, если у конкурентов дешевле?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o018", "text": "Как отписаться от рекламной рассылки?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o019", "text": "Есть ли у вас партнёрская программа для блогеров?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o020", "text": "Можно ли забронировать товар без оплаты?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o021", "text": "Продаёте ли вы товары для животных?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o022", "text": "Проводите ли вы распродажу в Чёрную пятницу?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o023", "text": "Можно ли оплатить заказ бонусами от банка-партнёра?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o024", "text": "Как стать поставщиком вашего магазина?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o025", "text": "Есть ли у вас услуга подъёма крупной техники на этаж?", "category": "faq", "expected_slugs": [], "out_of_kb": true}
+{"id": "o026", "text": "Как включить тёмную тему в приложении?", "category": "tech_issue", "expected_slugs": [], "out_of_kb": true}
+{"id": "o027", "text": "Как сменить язык приложения на английский?", "category": "tech_issue", "expected_slugs": [], "out_of_kb": true}
+{"id": "o028", "text": "Есть ли приложение для умных часов?", "category": "tech_issue", "expected_slugs": [], "out_of_kb": true}
+{"id": "o029", "text": "Не работает голосовой поиск в приложении", "category": "tech_issue", "expected_slugs": [], "out_of_kb": true}
+{"id": "o030", "text": "Приложение не устанавливается на Android 7", "category": "tech_issue", "expected_slugs": [], "out_of_kb": true}
+{"id": "o031", "text": "Как войти через Госуслуги?", "category": "tech_issue", "expected_slugs": [], "out_of_kb": true}
+{"id": "o032", "text": "Сканер штрихкодов в приложении не видит камеру", "category": "tech_issue", "expected_slugs": [], "out_of_kb": true}
+{"id": "o033", "text": "Есть ли у вас открытое API для интеграции с нашим складом?", "category": "tech_issue", "expected_slugs": [], "out_of_kb": true}
+{"id": "o034", "text": "Виджет на главном экране телефона не обновляется", "category": "tech_issue", "expected_slugs": [], "out_of_kb": true}
+{"id": "o035", "text": "Как настроить приложение для слабовидящих, увеличить шрифт?", "category": "tech_issue", "expected_slugs": [], "out_of_kb": true}
+{"id": "o036", "text": "Сайт открывается без картинок в браузере Safari", "category": "tech_issue", "expected_slugs": [], "out_of_kb": true}

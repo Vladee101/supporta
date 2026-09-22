@@ -143,7 +143,7 @@ def test_title_change_is_searchable_without_reindex(db_session, indexed_kb):
 
 
 def test_rag_confidence_stays_cosine_in_hybrid(db_session, indexed_kb):
-    """Порог 0.7 откалиброван на косинусе: оценка RRF не должна подменять rag_confidence."""
+    """Порог RAG откалиброван на косинусе: оценка RRF не должна подменять rag_confidence."""
     query = "Какие способы оплаты доступны?"
     vector = Retriever(HashingEmbeddingProvider(), top_k=4, mode="vector").retrieve(
         db_session, query

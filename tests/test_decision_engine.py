@@ -257,11 +257,13 @@ def test_class_confidence_boundary(class_confidence, expected_rule):
 
 
 @pytest.mark.parametrize(
-    ("rag_confidence", "expected_rule"),
-    [(0.6999, "R6"), (0.7, "R4"), (0.7001, "R4")],
+    ("offset", "expected_rule"),
+    [(-0.0001, "R6"), (0.0, "R4"), (0.0001, "R4")],
 )
-def test_rag_confidence_boundary(rag_confidence, expected_rule):
-    assert decide(ti(Category.FAQ, rag=rag_confidence, cls=0.95), T).rule_id == expected_rule
+def test_rag_confidence_boundary(offset, expected_rule):
+    """Граница - сам порог: значение калибруется (сейчас 0.60 под bge-m3), правило - нет."""
+    rag = round(T.rag_confidence + offset, 4)
+    assert decide(ti(Category.FAQ, rag=rag, cls=0.95), T).rule_id == expected_rule
 
 
 def test_missing_measurements_are_treated_as_below_threshold():

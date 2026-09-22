@@ -13,7 +13,7 @@
   в тихий автоответ, а даёт R-default: эскалацию плюс алерт `decision_table_gap`.
 
 Пороги приходят снаружи (`Thresholds`), в предикатах правил числовых констант нет:
-0.85 и 0.7 калибруются на golden set и меняются вместе с моделью, а не с кодом.
+0.85 и 0.6 калибруются на golden set и меняются вместе с моделью, а не с кодом.
 """
 
 from __future__ import annotations
@@ -39,7 +39,7 @@ class Thresholds:
     """Калибруемые пороги. Значения по умолчанию - стартовые, см. «Confidence и пороги»."""
 
     class_confidence: float = 0.85
-    rag_confidence: float = 0.7
+    rag_confidence: float = 0.6
     max_clarifications: int = 1
 
     def __post_init__(self) -> None:

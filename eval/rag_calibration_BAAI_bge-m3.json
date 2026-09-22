@@ -1,0 +1,746 @@
+{
+  "embedding_provider": "BAAI/bge-m3",
+  "retrieval_mode": "hybrid",
+  "top_k": 5,
+  "max_ungrounded_share": 0.05,
+  "samples": 208,
+  "out_of_kb_samples": 36,
+  "chosen": {
+    "threshold": 0.57,
+    "auto_answer_candidates": 167,
+    "ungrounded": 8,
+    "ungrounded_share": 0.0479,
+    "out_of_kb_passed": 4,
+    "grounded_coverage": 0.9755
+  },
+  "sweep": [
+    {
+      "threshold": 0.05,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.06,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.07,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.08,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.09,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.1,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.11,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.12,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.13,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.14,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.15,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.16,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.17,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.18,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.19,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.2,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.21,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.22,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.23,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.24,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.25,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.26,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.27,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.28,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.29,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.3,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.31,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.32,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.33,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.34,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.35,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.36,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.37,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.38,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.39,
+      "auto_answer_candidates": 208,
+      "ungrounded": 45,
+      "ungrounded_share": 0.2163,
+      "out_of_kb_passed": 36,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.4,
+      "auto_answer_candidates": 207,
+      "ungrounded": 44,
+      "ungrounded_share": 0.2126,
+      "out_of_kb_passed": 35,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.41,
+      "auto_answer_candidates": 205,
+      "ungrounded": 42,
+      "ungrounded_share": 0.2049,
+      "out_of_kb_passed": 33,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.42,
+      "auto_answer_candidates": 204,
+      "ungrounded": 41,
+      "ungrounded_share": 0.201,
+      "out_of_kb_passed": 32,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.43,
+      "auto_answer_candidates": 203,
+      "ungrounded": 40,
+      "ungrounded_share": 0.197,
+      "out_of_kb_passed": 31,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.44,
+      "auto_answer_candidates": 200,
+      "ungrounded": 37,
+      "ungrounded_share": 0.185,
+      "out_of_kb_passed": 28,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.45,
+      "auto_answer_candidates": 199,
+      "ungrounded": 36,
+      "ungrounded_share": 0.1809,
+      "out_of_kb_passed": 27,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.46,
+      "auto_answer_candidates": 197,
+      "ungrounded": 34,
+      "ungrounded_share": 0.1726,
+      "out_of_kb_passed": 25,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.47,
+      "auto_answer_candidates": 196,
+      "ungrounded": 33,
+      "ungrounded_share": 0.1684,
+      "out_of_kb_passed": 24,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.48,
+      "auto_answer_candidates": 194,
+      "ungrounded": 31,
+      "ungrounded_share": 0.1598,
+      "out_of_kb_passed": 22,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.49,
+      "auto_answer_candidates": 191,
+      "ungrounded": 28,
+      "ungrounded_share": 0.1466,
+      "out_of_kb_passed": 20,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.5,
+      "auto_answer_candidates": 189,
+      "ungrounded": 26,
+      "ungrounded_share": 0.1376,
+      "out_of_kb_passed": 18,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.51,
+      "auto_answer_candidates": 189,
+      "ungrounded": 26,
+      "ungrounded_share": 0.1376,
+      "out_of_kb_passed": 18,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.52,
+      "auto_answer_candidates": 186,
+      "ungrounded": 23,
+      "ungrounded_share": 0.1237,
+      "out_of_kb_passed": 15,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.53,
+      "auto_answer_candidates": 186,
+      "ungrounded": 23,
+      "ungrounded_share": 0.1237,
+      "out_of_kb_passed": 15,
+      "grounded_coverage": 1.0
+    },
+    {
+      "threshold": 0.54,
+      "auto_answer_candidates": 181,
+      "ungrounded": 19,
+      "ungrounded_share": 0.105,
+      "out_of_kb_passed": 11,
+      "grounded_coverage": 0.9939
+    },
+    {
+      "threshold": 0.55,
+      "auto_answer_candidates": 177,
+      "ungrounded": 16,
+      "ungrounded_share": 0.0904,
+      "out_of_kb_passed": 8,
+      "grounded_coverage": 0.9877
+    },
+    {
+      "threshold": 0.56,
+      "auto_answer_candidates": 170,
+      "ungrounded": 10,
+      "ungrounded_share": 0.0588,
+      "out_of_kb_passed": 4,
+      "grounded_coverage": 0.9816
+    },
+    {
+      "threshold": 0.57,
+      "auto_answer_candidates": 167,
+      "ungrounded": 8,
+      "ungrounded_share": 0.0479,
+      "out_of_kb_passed": 4,
+      "grounded_coverage": 0.9755
+    },
+    {
+      "threshold": 0.58,
+      "auto_answer_candidates": 163,
+      "ungrounded": 6,
+      "ungrounded_share": 0.0368,
+      "out_of_kb_passed": 2,
+      "grounded_coverage": 0.9632
+    },
+    {
+      "threshold": 0.59,
+      "auto_answer_candidates": 160,
+      "ungrounded": 5,
+      "ungrounded_share": 0.0312,
+      "out_of_kb_passed": 1,
+      "grounded_coverage": 0.9509
+    },
+    {
+      "threshold": 0.6,
+      "auto_answer_candidates": 157,
+      "ungrounded": 5,
+      "ungrounded_share": 0.0318,
+      "out_of_kb_passed": 1,
+      "grounded_coverage": 0.9325
+    },
+    {
+      "threshold": 0.61,
+      "auto_answer_candidates": 148,
+      "ungrounded": 4,
+      "ungrounded_share": 0.027,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.8834
+    },
+    {
+      "threshold": 0.62,
+      "auto_answer_candidates": 137,
+      "ungrounded": 2,
+      "ungrounded_share": 0.0146,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.8282
+    },
+    {
+      "threshold": 0.63,
+      "auto_answer_candidates": 131,
+      "ungrounded": 2,
+      "ungrounded_share": 0.0153,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.7914
+    },
+    {
+      "threshold": 0.64,
+      "auto_answer_candidates": 126,
+      "ungrounded": 2,
+      "ungrounded_share": 0.0159,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.7607
+    },
+    {
+      "threshold": 0.65,
+      "auto_answer_candidates": 115,
+      "ungrounded": 1,
+      "ungrounded_share": 0.0087,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.6994
+    },
+    {
+      "threshold": 0.66,
+      "auto_answer_candidates": 108,
+      "ungrounded": 1,
+      "ungrounded_share": 0.0093,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.6564
+    },
+    {
+      "threshold": 0.67,
+      "auto_answer_candidates": 105,
+      "ungrounded": 1,
+      "ungrounded_share": 0.0095,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.638
+    },
+    {
+      "threshold": 0.68,
+      "auto_answer_candidates": 96,
+      "ungrounded": 1,
+      "ungrounded_share": 0.0104,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.5828
+    },
+    {
+      "threshold": 0.69,
+      "auto_answer_candidates": 79,
+      "ungrounded": 1,
+      "ungrounded_share": 0.0127,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.4785
+    },
+    {
+      "threshold": 0.7,
+      "auto_answer_candidates": 65,
+      "ungrounded": 1,
+      "ungrounded_share": 0.0154,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.3926
+    },
+    {
+      "threshold": 0.71,
+      "auto_answer_candidates": 48,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.2945
+    },
+    {
+      "threshold": 0.72,
+      "auto_answer_candidates": 36,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.2209
+    },
+    {
+      "threshold": 0.73,
+      "auto_answer_candidates": 28,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.1718
+    },
+    {
+      "threshold": 0.74,
+      "auto_answer_candidates": 22,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.135
+    },
+    {
+      "threshold": 0.75,
+      "auto_answer_candidates": 19,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.1166
+    },
+    {
+      "threshold": 0.76,
+      "auto_answer_candidates": 15,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.092
+    },
+    {
+      "threshold": 0.77,
+      "auto_answer_candidates": 11,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0675
+    },
+    {
+      "threshold": 0.78,
+      "auto_answer_candidates": 7,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0429
+    },
+    {
+      "threshold": 0.79,
+      "auto_answer_candidates": 6,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0368
+    },
+    {
+      "threshold": 0.8,
+      "auto_answer_candidates": 3,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0184
+    },
+    {
+      "threshold": 0.81,
+      "auto_answer_candidates": 1,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0061
+    },
+    {
+      "threshold": 0.82,
+      "auto_answer_candidates": 0,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0
+    },
+    {
+      "threshold": 0.83,
+      "auto_answer_candidates": 0,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0
+    },
+    {
+      "threshold": 0.84,
+      "auto_answer_candidates": 0,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0
+    },
+    {
+      "threshold": 0.85,
+      "auto_answer_candidates": 0,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0
+    },
+    {
+      "threshold": 0.86,
+      "auto_answer_candidates": 0,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0
+    },
+    {
+      "threshold": 0.87,
+      "auto_answer_candidates": 0,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0
+    },
+    {
+      "threshold": 0.88,
+      "auto_answer_candidates": 0,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0
+    },
+    {
+      "threshold": 0.89,
+      "auto_answer_candidates": 0,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0
+    },
+    {
+      "threshold": 0.9,
+      "auto_answer_candidates": 0,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0
+    },
+    {
+      "threshold": 0.91,
+      "auto_answer_candidates": 0,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0
+    },
+    {
+      "threshold": 0.92,
+      "auto_answer_candidates": 0,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0
+    },
+    {
+      "threshold": 0.93,
+      "auto_answer_candidates": 0,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0
+    },
+    {
+      "threshold": 0.94,
+      "auto_answer_candidates": 0,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0
+    },
+    {
+      "threshold": 0.95,
+      "auto_answer_candidates": 0,
+      "ungrounded": 0,
+      "ungrounded_share": 0.0,
+      "out_of_kb_passed": 0,
+      "grounded_coverage": 0.0
+    }
+  ]
+}

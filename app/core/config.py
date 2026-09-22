@@ -37,7 +37,9 @@ class Settings(BaseSettings):
 
     # Пороги маршрутизации (калибруются, см. «Confidence и пороги»).
     class_confidence_threshold: float = Field(default=0.85, ge=0.0, le=1.0)
-    rag_confidence_threshold: float = Field(default=0.7, ge=0.0, le=1.0)
+    #: 0.6 - калибровка под bge-m3 в гибридном режиме (scripts.calibrate_rag,
+    #: eval/rag_calibration_BAAI_bge-m3.json). Для хеширующего провайдера - ~0.15.
+    rag_confidence_threshold: float = Field(default=0.6, ge=0.0, le=1.0)
     max_clarifications: int = Field(default=1, ge=0)
 
     # Таймауты.
