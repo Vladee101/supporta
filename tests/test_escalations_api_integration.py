@@ -10,7 +10,16 @@ from sqlalchemy import select
 
 from app.core.auth import issue_token
 from app.db.base import get_session
-from app.db.models import AuditLog, Escalation, Message, OperatorAction, Ticket
+from app.db.models import (
+    AuditLog,
+    Escalation,
+    KbDocument,
+    KbDocumentVersion,
+    Message,
+    OperatorAction,
+    RagRetrieval,
+    Ticket,
+)
 from app.domain.enums import EscalationReason, OperatorRole, TicketStatus
 from app.escalations import operations as ops
 from app.main import app
@@ -92,6 +101,35 @@ def test_context_package_contains_what_operator_needs(client, db_session):
     assert body["escalation"]["draft_text"]
     assert body["ticket"]["id"] == str(ticket.id)
     assert body["messages"][0]["content"] == "Вопрос клиента"
+
+
+def test_context_documents_are_named_not_just_ranked(client, db_session):
+    """Оператор видит, какой документ нашёл агент, не раскрывая каждый снапшот."""
+    operator = make_operator(db_session)
+    ticket, escalation = make_escalated_ticket(db_session)
+    document = KbDocument(slug="delivery-terms", title="Сроки доставки")
+    db_session.add(document)
+    db_session.flush()
+    version = KbDocumentVersion(document_id=document.id, version=2, content="Текст версии 2")
+    db_session.add(version)
+    db_session.flush()
+    db_session.add(
+        RagRetrieval(
+            ticket_id=ticket.id,
+            document_version_id=version.id,
+            rank=1,
+            relevance_score=0.81,
+            chunk_snapshot="То, что видел агент",
+        )
+    )
+    db_session.flush()
+
+    body = client.get(f"/api/v1/escalations/{escalation.id}", headers=auth(operator)).json()
+
+    [found] = body["documents"]
+    assert found["title"] == "Сроки доставки"
+    assert (found["slug"], found["version"]) == ("delivery-terms", 2)
+    assert found["snapshot"] == "То, что видел агент"
 
 
 def test_unknown_escalation_is_404(client, db_session):

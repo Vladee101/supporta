@@ -43,6 +43,9 @@ export interface ContextDocument {
   rank: number;
   relevance_score: number;
   document_version_id: string;
+  slug: string;
+  title: string;
+  version: number;
   snapshot: string | null;
 }
 

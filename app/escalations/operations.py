@@ -31,6 +31,8 @@ from app.db.models import (
     AuditLog,
     Classification,
     Escalation,
+    KbDocument,
+    KbDocumentVersion,
     Message,
     OperatorAction,
     RagRetrieval,
@@ -385,8 +387,12 @@ def context(session: Session, escalation_id: uuid.UUID) -> dict:
         .where(Classification.ticket_id == ticket.id)
         .order_by(Classification.iteration)
     ).all()
-    retrievals = session.scalars(
-        select(RagRetrieval)
+    # Название и версия документа - чтобы оператор видел, что нашёл агент, не раскрывая
+    # каждый снапшот. Версия - та, что видел агент (ADR-011), название - текущее.
+    retrievals = session.execute(
+        select(RagRetrieval, KbDocument.slug, KbDocument.title, KbDocumentVersion.version)
+        .join(KbDocumentVersion, KbDocumentVersion.id == RagRetrieval.document_version_id)
+        .join(KbDocument, KbDocument.id == KbDocumentVersion.document_id)
         .where(RagRetrieval.ticket_id == ticket.id)
         .order_by(RagRetrieval.iteration, RagRetrieval.rank)
     ).all()
@@ -430,9 +436,12 @@ def context(session: Session, escalation_id: uuid.UUID) -> dict:
                 "rank": row.rank,
                 "relevance_score": row.relevance_score,
                 "document_version_id": str(row.document_version_id),
+                "slug": slug,
+                "title": title,
+                "version": version,
                 "snapshot": row.chunk_snapshot,
             }
-            for row in retrievals
+            for row, slug, title, version in retrievals
         ],
     }
 

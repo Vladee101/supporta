@@ -118,8 +118,11 @@ function AgentReasoning({ data }: { data: EscalationContext }) {
         {data.documents.map((doc) => (
           <details key={`${doc.iteration}-${doc.rank}`} className="document">
             <summary>
-              #{doc.rank} · релевантность {doc.relevance_score.toFixed(2)}
-              {doc.iteration > 0 && <span className="muted"> · итерация {doc.iteration}</span>}
+              {doc.title}
+              <span className="muted small">
+                {" "}· v{doc.version} · релевантность {doc.relevance_score.toFixed(2)}
+                {doc.iteration > 0 && <> · итерация {doc.iteration}</>}
+              </span>
             </summary>
             {/* Снапшот того текста, что видел агент, - не текущая версия документа (ADR-011). */}
             <p className="small">{doc.snapshot}</p>

@@ -37,9 +37,16 @@ export function parseToken(token: string): Session | null {
  * в access-логи. Из адресной строки он сразу убирается.
  */
 function takeTokenFromLocation(): Session | null {
-  const match = window.location.hash.match(/(?:^#|&)token=([^&]+)/);
+  const hash = window.location.hash;
+  const match = hash.match(/(?:^#|&)token=([^&]+)/);
   if (!match) return null;
-  history.replaceState(null, "", window.location.pathname + window.location.search);
+  // Убирается только токен: маршрут (#/escalations/<id>&token=...) остаётся.
+  const rest = hash.replace(match[0], "").replace(/^#?&/, "#");
+  history.replaceState(
+    null,
+    "",
+    window.location.pathname + window.location.search + (rest === "#" ? "" : rest),
+  );
   const session = parseToken(decodeURIComponent(match[1]));
   if (session && session.expiresAt > new Date()) {
     saveSession(session);
