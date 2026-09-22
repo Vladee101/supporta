@@ -20,6 +20,7 @@ from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
     Boolean,
     CheckConstraint,
+    Computed,
     DateTime,
     Float,
     ForeignKey,
@@ -31,7 +32,7 @@ from sqlalchemy import (
     func,
     text,
 )
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.dialects.postgresql import JSONB, TSVECTOR, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from app.domain.enums import (
@@ -48,6 +49,8 @@ from app.domain.enums import (
 
 #: Размерность bge-m3 (ADR-006). Меняется только вместе с моделью и переиндексацией.
 EMBEDDING_DIM = 1024
+#: Конфигурация полнотекстового поиска: морфология русского (стемминг snowball).
+SEARCH_CONFIG = "russian"
 
 
 class Base(DeclarativeBase):
@@ -227,6 +230,12 @@ class KbDocumentVersion(Base):
     content: Mapped[str] = mapped_column(Text, nullable=False)
     embedding: Mapped[list[float] | None] = mapped_column(Vector(EMBEDDING_DIM))
     embedding_model: Mapped[str | None] = mapped_column(String(128))
+    #: Лексическая половина гибридного поиска (ADR-010). Считается самим Postgres
+    #: из текста версии: не зависит от embedding-провайдера и асинхронной
+    #: индексации, версия ищется по словам сразу после сохранения.
+    search_vector: Mapped[str | None] = mapped_column(
+        TSVECTOR, Computed(f"to_tsvector('{SEARCH_CONFIG}', content)", persisted=True)
+    )
     created_at: Mapped[datetime] = _created_at()
 
     document: Mapped[KbDocument] = relationship(
@@ -245,6 +254,11 @@ class KbDocumentVersion(Base):
             postgresql_using="hnsw",
             postgresql_with={"m": 16, "ef_construction": 64},
             postgresql_ops={"embedding": "vector_cosine_ops"},
+        ),
+        Index(
+            "ix_kb_document_versions_search_vector",
+            "search_vector",
+            postgresql_using="gin",
         ),
     )
 

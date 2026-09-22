@@ -50,6 +50,11 @@ class Settings(BaseSettings):
     embedding_model: str = "BAAI/bge-m3"  # ADR-006
     embedding_dim: int = 1024
     rag_top_k: int = Field(default=5, ge=1)
+    #: ADR-010: гибрид (вектор + полнотекстовый поиск, слияние по RRF) включён -
+    #: сработал заранее заданный триггер, Recall@5 на golden set ниже 0.9.
+    rag_retrieval_mode: Literal["vector", "hybrid"] = "hybrid"
+    #: Сколько кандидатов берёт каждая ветка гибрида до слияния.
+    rag_candidates: int = Field(default=20, ge=1)
     #: auto - bge-m3, если установлен, иначе хеширующий; bge / hashing - явно.
     #: Порог RAG откалиброван под конкретный провайдер: при hashing нужен свой.
     embedding_provider: Literal["auto", "bge", "hashing"] = "auto"

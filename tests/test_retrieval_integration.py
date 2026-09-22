@@ -103,3 +103,63 @@ def test_empty_knowledge_base_gives_no_confidence(db_session, retriever):
     result = retriever.retrieve(db_session, "что угодно")
     assert result.is_empty
     assert result.rag_confidence is None
+
+
+# --- гибридный поиск (ADR-010) ----------------------------------------------
+
+
+def _retitle(db_session, versions, slug: str, title: str) -> None:
+    for version in versions:
+        document = db_session.get(KbDocument, version.document_id)
+        if document.slug == slug:
+            document.title = title
+    db_session.flush()
+
+
+def test_lexical_match_on_title_reaches_top_in_hybrid(db_session, indexed_kb):
+    """Слово есть только в заголовке: эмбеддинг текста его не видит, полнотекстовая ветка - да."""
+    _retitle(db_session, indexed_kb, "app-crash-on-start", "Холодильники: гарантийный ремонт")
+
+    result = Retriever(HashingEmbeddingProvider(), top_k=1, mode="hybrid").retrieve(
+        db_session, "холодильник"
+    )
+    assert [chunk.slug for chunk in result.chunks] == ["app-crash-on-start"]
+
+
+def test_title_change_is_searchable_without_reindex(db_session, indexed_kb):
+    """Заголовок складывается в запросе, а не хранится в версии: переиндексация не нужна."""
+    version = next(
+        v for v in indexed_kb if db_session.get(KbDocument, v.document_id).slug == "return-policy"
+    )
+    embedding_before = list(version.embedding)
+
+    _retitle(db_session, indexed_kb, "return-policy", "Возврат самовара")
+    result = Retriever(HashingEmbeddingProvider(), top_k=1, mode="hybrid").retrieve(
+        db_session, "самовар"
+    )
+
+    assert result.chunks[0].slug == "return-policy"
+    assert list(version.embedding) == embedding_before  # версия и её вектор не тронуты
+
+
+def test_rag_confidence_stays_cosine_in_hybrid(db_session, indexed_kb):
+    """Порог 0.7 откалиброван на косинусе: оценка RRF не должна подменять rag_confidence."""
+    query = "Какие способы оплаты доступны?"
+    vector = Retriever(HashingEmbeddingProvider(), top_k=4, mode="vector").retrieve(
+        db_session, query
+    )
+    hybrid = Retriever(HashingEmbeddingProvider(), top_k=4, mode="hybrid").retrieve(
+        db_session, query
+    )
+
+    cosine = {chunk.slug: chunk.relevance_score for chunk in vector.chunks}
+    assert {chunk.slug: chunk.relevance_score for chunk in hybrid.chunks} == cosine
+    assert hybrid.rag_confidence == max(cosine.values())
+
+
+def test_query_of_stop_words_does_not_break_hybrid(db_session, indexed_kb):
+    """plainto_tsquery из одних стоп-слов пуст - лексическая ветка просто ничего не находит."""
+    result = Retriever(HashingEmbeddingProvider(), top_k=3, mode="hybrid").retrieve(
+        db_session, "и в на с по"
+    )
+    assert all(0.0 <= chunk.relevance_score <= 1.0 for chunk in result.chunks)
