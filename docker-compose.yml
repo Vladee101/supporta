@@ -31,5 +31,20 @@ services:
       timeout: 5s
       retries: 10
 
+  # SLI и алерты (раздел «Наблюдаемость», docs/runbook.md). Отдельный профиль:
+  # docker compose --profile observability up -d  → http://localhost:9090
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    profiles: ["observability"]
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./deploy/prometheus:/etc/prometheus:ro
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    extra_hosts:
+      # API работает на хосте; на Linux host.docker.internal нужно объявить явно.
+      - "host.docker.internal:host-gateway"
+
 volumes:
   pgdata:

@@ -16,14 +16,17 @@ from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel, Field, ValidationError
 from sqlalchemy.orm import Session
 
+from app import metrics
 from app.agent.factory import get_agent_service
 from app.agent.service import AgentService
 from app.api.errors import ApiError
+from app.core import tracing
 from app.core.auth import issue_ticket_token, ticket_access, verify_webhook_signature
 from app.core.config import get_settings
 from app.db.base import get_session
+from app.db.models import AuditLog
 from app.domain.decision import PRIORITY_STANDARD
-from app.domain.enums import EscalationReason, TicketStatus
+from app.domain.enums import Action, EscalationReason, TicketStatus
 from app.escalations.writer import create_escalation
 from app.services.llm import LLMUnavailableError
 from app.tickets import service as tickets
@@ -57,6 +60,7 @@ def _run_agent(session: Session, agent: AgentService, ticket) -> str | None:
     except LLMUnavailableError:
         session.rollback()
         log.warning("LLM недоступен, тикет %s эскалирован", ticket.id)
+        trace_id = tracing.ensure_trace_id()
         create_escalation(
             session,
             ticket,
@@ -64,9 +68,23 @@ def _run_agent(session: Session, agent: AgentService, ticket) -> str | None:
             rule_id="NFR6",
             priority=PRIORITY_STANDARD,
             category=ticket.category or "unclassified",
+            trace_id=trace_id,
         )
         ticket.status = TicketStatus.ESCALATED_STANDARD.value
+        # NFR3: решение трассируемо и тогда, когда агент не дошёл до Decision Engine.
+        session.add(
+            AuditLog(
+                ticket_id=ticket.id,
+                actor="agent",
+                action=Action.ESCALATE.value,
+                rule_id="NFR6",
+                payload={"reason": EscalationReason.LLM_UNAVAILABLE.value},
+                trace_id=trace_id,
+            )
+        )
         session.commit()
+        # SLI «доля эскалаций llm_unavailable» считается именно по этому пути.
+        metrics.observe_llm_unavailable()
         return None
     return result.outcome.reply_text
 

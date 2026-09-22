@@ -12,6 +12,7 @@
 
 from __future__ import annotations
 
+import time
 import uuid
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -19,7 +20,9 @@ from datetime import UTC, datetime
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app import metrics
 from app.agent.graph import AgentOutcome, TicketGraph
+from app.core import tracing
 from app.db.base import release_connection
 from app.db.models import (
     AuditLog,
@@ -58,8 +61,10 @@ class AgentService:
         self._graph = graph
 
     def process(self, session: Session, ticket: Ticket) -> ProcessingResult:
+        started = time.monotonic()
         text = self._latest_client_message(session, ticket)
-        trace_id = uuid.uuid4().hex
+        # Тот же trace_id, что у HTTP-запроса (раздел «Наблюдаемость»).
+        trace_id = tracing.ensure_trace_id()
         # Дальше - классификация через LLM: соединение с базой на это время не нужно.
         release_connection(session)
 
@@ -73,6 +78,8 @@ class AgentService:
         iteration = ticket.clarification_count
         escalation_id = self._persist(session, ticket, outcome, iteration, trace_id)
         session.commit()
+        # После commit'а: откатившийся проход не должен попасть в SLI.
+        metrics.observe_ticket(outcome, time.monotonic() - started)
 
         return ProcessingResult(
             ticket_id=ticket.id,
@@ -164,7 +171,7 @@ class AgentService:
 
         escalation_id: uuid.UUID | None = None
         if decision.is_escalation:
-            escalation_id = self._create_escalation(session, ticket, outcome, now)
+            escalation_id = self._create_escalation(session, ticket, outcome, trace_id)
 
         session.add(
             AuditLog(
@@ -184,7 +191,7 @@ class AgentService:
         return escalation_id
 
     def _create_escalation(
-        self, session: Session, ticket: Ticket, outcome: AgentOutcome, now: datetime
+        self, session: Session, ticket: Ticket, outcome: AgentOutcome, trace_id: str
     ) -> uuid.UUID:
         decision = outcome.decision
         # Инвариант Decision Engine: у любой эскалации есть причина
@@ -198,6 +205,7 @@ class AgentService:
             priority=decision.priority,
             category=outcome.category.value,
             draft_text=outcome.draft.text if outcome.draft else None,
+            trace_id=trace_id,
         )
         return escalation.id
 

@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
+from app import metrics
 from app.api.errors import ApiError
 from app.core.auth import Principal, current_operator
 from app.core.config import get_settings
@@ -106,6 +107,8 @@ def resolve(
         )
     except ops.EscalationError as exc:
         raise _translate(exc) from exc
+    # SLI «доля правок оператора» (раздел «Наблюдаемость»); resolve уже закоммичен.
+    metrics.observe_operator_action(action.action_type)
     return {
         "escalation_id": str(escalation_id),
         "action": action.action_type,

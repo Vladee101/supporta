@@ -112,6 +112,10 @@ class Settings(BaseSettings):
     # где консоль работает только через REST.
     ws_bridge_enabled: bool = False
 
+    # Логи (раздел «Наблюдаемость»): json - по умолчанию, text - для чтения глазами.
+    # PII-редакция действует в обоих форматах.
+    log_format: Literal["json", "text"] = "json"
+
 
 @once
 def get_settings() -> Settings:

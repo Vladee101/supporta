@@ -126,9 +126,12 @@ app/
   workers/             outbox poller, escalation consumer, scheduler; переподключение с backoff
   kb/                  версии документов и фоновая индексация
   retention.py         вычистка персональных данных по сроку хранения (NFR4)
+  metrics.py           метрики SLI для Prometheus (события и состояние)
   db/models.py         схема из ERD
   core/                конфиг (пороги и таймауты), токены и подписи
 console/               консоль оператора: React 19 + TypeScript + Vite
+deploy/prometheus/     конфиг Prometheus, алерты и их юнит-тесты
+docs/runbook.md        операционные сценарии по каждому алерту
 migrations/            alembic 0001-0007
 scripts/               seed/index KB, golden set, eval, нагрузочный тест, отчёт по NFR, демо
 eval/                  golden set (359), adversarial-набор (24), отчёт метрик
@@ -233,6 +236,25 @@ inbox `consumed_events` в той же транзакции, что и смен�
 за время простоя брокера, копятся в outbox и доставляются после восстановления.
 Проверено остановкой контейнеров на живом стенде.
 
+## Наблюдаемость
+
+SLI из design document - эндпоинт `/metrics` для Prometheus, алерты с юнит-тестами и
+runbook рядом с кодом:
+
+```bash
+docker compose --profile observability up -d     # Prometheus на :9090, алерты загружены
+```
+
+- [deploy/prometheus/alerts.yml](deploy/prometheus/alerts.yml) - алерт на каждую строку
+  таблицы SLI; [alerts_test.yml](deploy/prometheus/alerts_test.yml) - тесты `promtool`, в CI;
+- [docs/runbook.md](docs/runbook.md) - что проверить и что делать по каждому алерту;
+- сквозной `trace_id`: заголовок `X-Trace-Id` → `audit_log` → событие outbox → логи
+  consumer'а → тело ошибки;
+- логи - JSON с PII-редакцией (`LOG_FORMAT=text` - для чтения глазами).
+
+Проверено на живом стенде: при остановленном поллере алерт `OutboxStalled` сработал
+через 2 минуты и погас сам, когда поллер опубликовал накопленные события.
+
 ## Консоль оператора (этап 5)
 
 React + TypeScript (Vite), каталог `console/`. API отдаёт сборку по адресу
@@ -327,4 +349,5 @@ RouterAI), GigaChat - только на имитированном. Соедин
 | - | Устойчивость воркеров к сбоям инфраструктуры, CI | готово |
 | - | Замер LLM на golden set, сверка уверенности с базовой линией (ADR-012) | готово: NFR2 выполнен |
 | - | Стоимость на тикет (NFR5), расход LLM в audit_log | готово: p95 $0.0013 при пороге $0.02 |
+| - | Наблюдаемость: метрики SLI, алерты с тестами, runbook, сквозной trace_id, JSON-логи | готово |
 | - | Задержка реального провайдера под нагрузкой (NFR1, NFR8) | не измерено |

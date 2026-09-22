@@ -1,0 +1,150 @@
+# Алерты по таблице SLI из раздела «Наблюдаемость» design document.
+# Каждый алерт ссылается на раздел runbook (docs/runbook.md) - что проверить и что делать.
+# Проверка: promtool check rules alerts.yml; юнит-тесты: promtool test rules alerts_test.yml
+groups:
+  - name: support-sli-recording
+    rules:
+      # Доля автоответов за час. Коридор ожидаемого - от golden set:
+      # 56 автоответов на 359 обращений ≈ 16% (Alice AI + сверка, bge-m3, τ_rag = 0.60).
+      - record: support:auto_answer_share:1h
+        expr: |
+          sum(increase(support_tickets_processed_total{action="A1"}[1h]))
+            / sum(increase(support_tickets_processed_total[1h]))
+      - record: support:tickets:1h
+        expr: sum(increase(support_tickets_processed_total[1h]))
+      # Доля правок оператора (edit среди всех ответов) за неделю.
+      - record: support:operator_edit_share:7d
+        expr: |
+          sum(increase(support_operator_actions_total{action_type="edit"}[7d]))
+            / sum(increase(support_operator_actions_total[7d]))
+
+  - name: support-sli
+    rules:
+      - alert: AutoAnswerLatencyHigh
+        expr: |
+          histogram_quantile(0.95,
+            sum by (le) (rate(support_ticket_processing_seconds_bucket{action="A1"}[5m]))
+          ) > 8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: p95 задержки автоответа выше 8 с (NFR1)
+          runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#auto-answer-latency
+
+      - alert: DecisionTableGap
+        # R-default - комбинация входов, не покрытая decision table. Любое срабатывание -
+        # дефект таблицы, а не нагрузка: алерт без ожидания и с высоким приоритетом.
+        expr: increase(support_tickets_processed_total{rule_id="R-default"}[5m]) > 0
+        labels:
+          severity: critical
+        annotations:
+          summary: Сработало правило R-default - дефект decision table
+          runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#decision-table-gap
+
+      - alert: AutoAnswerShareLow
+        # Резкое падение доли автоответов - деградация RAG (часто после обновления KB).
+        # Порог - треть от ожидаемых ~16%; при малом трафике доля шумит, отсюда условие на объём.
+        expr: support:auto_answer_share:1h < 0.05 and support:tickets:1h > 20
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: Доля автоответов ниже 5% за час - подозрение на деградацию RAG
+          runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#auto-answer-share
+
+      - alert: AutoAnswerShareHigh
+        # Резкий рост - подозрение на поломку порогов: агент отвечает там, где раньше эскалировал.
+        expr: support:auto_answer_share:1h > 0.40 and support:tickets:1h > 20
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: Доля автоответов выше 40% за час - проверить пороги
+          runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#auto-answer-share
+
+      - alert: OperatorOverrideRateGrowth
+        expr: support:operator_edit_share:7d > 1.2 * (support:operator_edit_share:7d offset 7d)
+        for: 1h
+        labels:
+          severity: info
+        annotations:
+          summary: Доля правок оператора выросла больше чем на 20% за неделю
+          runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#operator-override
+
+      - alert: DeadLetterNotEmpty
+        expr: support_rabbitmq_queue_messages{queue="escalations.dead"} > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: В escalations.dead есть сообщения - эскалация не дошла до консоли
+          runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#dead-letter
+
+      - alert: OutboxStalled
+        expr: support_outbox_oldest_pending_seconds > 120
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: Событие outbox не опубликовано больше 2 минут - поллер встал
+          runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#outbox-stalled
+
+      - alert: OutboxStuckEvents
+        expr: support_outbox_stuck > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: События outbox исчерпали попытки публикации
+          runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#outbox-stalled
+
+      - alert: LlmUnavailableHigh
+        expr: |
+          sum(increase(support_escalations_total{reason="llm_unavailable"}[15m]))
+            / sum(increase(support_tickets_processed_total[15m])) > 0.05
+          and sum(increase(support_tickets_processed_total[15m])) > 10
+        labels:
+          severity: critical
+        annotations:
+          summary: Больше 5% тикетов за 15 минут эскалировано из-за недоступности LLM
+          runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#llm-unavailable
+
+      - alert: LlmCostPerTicketHigh
+        # NFR5: $0.02 на тикет ≈ 1.68 ₽ по курсу 84 ₽/$ (ЦБ, 22.09.2026). Замер: p95 0.108 ₽.
+        expr: |
+          sum(increase(support_llm_cost_rub_total[1d]))
+            / sum(increase(support_tickets_processed_total[1d])) > 1.68
+        labels:
+          severity: warning
+        annotations:
+          summary: Средняя стоимость LLM на тикет за сутки выше порога NFR5
+          runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#llm-cost
+
+      - alert: LlmCostUnknown
+        expr: increase(support_llm_calls_without_cost_total[1h]) > 0
+        labels:
+          severity: info
+        annotations:
+          summary: Провайдер не сообщает стоимость вызовов - NFR5 не контролируется
+          runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#llm-cost
+
+      - alert: MetricsSourceDown
+        # /metrics отвечает, но не может снять состояние Postgres или RabbitMQ:
+        # алерты на outbox и DLX в этот момент слепы.
+        expr: support_database_up == 0 or support_rabbitmq_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: Postgres или RabbitMQ недоступны для снятия метрик
+          runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#metrics-source-down
+
+      - alert: SupportApiDown
+        expr: up{job="support-api"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: Prometheus не может опросить API
+          runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#api-down

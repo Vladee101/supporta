@@ -1,0 +1,15 @@
+# Prometheus для SLI из раздела «Наблюдаемость» design document.
+# Запуск: docker compose --profile observability up -d  → http://localhost:9090
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - alerts.yml
+
+scrape_configs:
+  - job_name: support-api
+    metrics_path: /metrics
+    static_configs:
+      # API запускается на хосте (uvicorn :8000), Prometheus - в контейнере.
+      - targets: ["host.docker.internal:8000"]

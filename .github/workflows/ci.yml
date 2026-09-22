@@ -115,6 +115,21 @@ jobs:
           name: eval-report
           path: eval/report.json
 
+  alerts:
+    # Алерты из раздела «Наблюдаемость»: синтаксис правил и юнит-тесты на
+    # синтетических рядах - алерт, который никогда не срабатывает, хуже его отсутствия.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Конфиг и правила Prometheus
+        run: >-
+          docker run --rm --entrypoint promtool -v "$PWD/deploy/prometheus:/cfg"
+          prom/prometheus:v3.5.0 check config /cfg/prometheus.yml
+      - name: Юнит-тесты алертов
+        run: >-
+          docker run --rm --entrypoint promtool -v "$PWD/deploy/prometheus:/cfg" -w /cfg
+          prom/prometheus:v3.5.0 test rules alerts_test.yml
+
   console:
     runs-on: ubuntu-latest
     defaults:

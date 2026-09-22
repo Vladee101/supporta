@@ -1,0 +1,174 @@
+# Юнит-тесты алертов: promtool test rules alerts_test.yml
+# Синтетические ряды - и положительные случаи, и отрицательные (малый трафик, до истечения for).
+rule_files:
+  - alerts.yml
+
+evaluation_interval: 1m
+
+tests:
+  - name: R-default - инцидент сразу
+    interval: 1m
+    input_series:
+      - series: 'support_tickets_processed_total{action="A2",rule_id="R-default",job="support-api",instance="api"}'
+        values: "0 0 1 1 1"
+    alert_rule_test:
+      - eval_time: 1m
+        alertname: DecisionTableGap
+        exp_alerts: []
+      - eval_time: 3m
+        alertname: DecisionTableGap
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              action: A2
+              rule_id: R-default
+              job: support-api
+              instance: api
+            exp_annotations:
+              summary: Сработало правило R-default - дефект decision table
+              runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#decision-table-gap
+
+  - name: Поллер встал - событие outbox старше 2 минут
+    interval: 1m
+    input_series:
+      - series: 'support_outbox_oldest_pending_seconds{job="support-api",instance="api"}'
+        values: "0 60 130 190 250"
+    alert_rule_test:
+      # В 2m условие уже истинно, но for: 1m ещё не истёк - алерт только pending.
+      - eval_time: 2m
+        alertname: OutboxStalled
+        exp_alerts: []
+      - eval_time: 3m
+        alertname: OutboxStalled
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              job: support-api
+              instance: api
+            exp_annotations:
+              summary: Событие outbox не опубликовано больше 2 минут - поллер встал
+              runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#outbox-stalled
+
+  - name: Сообщение в DLX
+    interval: 1m
+    input_series:
+      - series: 'support_rabbitmq_queue_messages{queue="escalations.dead",job="support-api",instance="api"}'
+        values: "0 1 1 1"
+      - series: 'support_rabbitmq_queue_messages{queue="escalations.created",job="support-api",instance="api"}'
+        values: "5 5 5 5"
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: DeadLetterNotEmpty
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              queue: escalations.dead
+              job: support-api
+              instance: api
+            exp_annotations:
+              summary: В escalations.dead есть сообщения - эскалация не дошла до консоли
+              runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#dead-letter
+
+  - name: LLM недоступен у половины тикетов
+    interval: 1m
+    input_series:
+      - series: 'support_tickets_processed_total{action="A2",rule_id="NFR6",job="support-api",instance="api"}'
+        values: "0+1x20"
+      - series: 'support_tickets_processed_total{action="A1",rule_id="R4",job="support-api",instance="api"}'
+        values: "0+1x20"
+      - series: 'support_escalations_total{reason="llm_unavailable",job="support-api",instance="api"}'
+        values: "0+1x20"
+    alert_rule_test:
+      - eval_time: 15m
+        alertname: LlmUnavailableHigh
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+            exp_annotations:
+              summary: Больше 5% тикетов за 15 минут эскалировано из-за недоступности LLM
+              runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#llm-unavailable
+
+  - name: LLM недоступен, но трафик слишком мал для вывода
+    interval: 1m
+    input_series:
+      - series: 'support_tickets_processed_total{action="A2",rule_id="NFR6",job="support-api",instance="api"}'
+        values: "0+0.3x20"
+      - series: 'support_escalations_total{reason="llm_unavailable",job="support-api",instance="api"}'
+        values: "0+0.3x20"
+    alert_rule_test:
+      - eval_time: 15m
+        alertname: LlmUnavailableHigh
+        exp_alerts: []
+
+  - name: p95 автоответа выше 8 с
+    interval: 1m
+    input_series:
+      - series: 'support_ticket_processing_seconds_bucket{action="A1",le="1",job="support-api",instance="api"}'
+        values: "0+0x15"
+      - series: 'support_ticket_processing_seconds_bucket{action="A1",le="8",job="support-api",instance="api"}'
+        values: "0+0x15"
+      - series: 'support_ticket_processing_seconds_bucket{action="A1",le="10",job="support-api",instance="api"}'
+        values: "0+10x15"
+      - series: 'support_ticket_processing_seconds_bucket{action="A1",le="+Inf",job="support-api",instance="api"}'
+        values: "0+10x15"
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: AutoAnswerLatencyHigh
+        exp_alerts: []
+      - eval_time: 10m
+        alertname: AutoAnswerLatencyHigh
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+            exp_annotations:
+              summary: p95 задержки автоответа выше 8 с (NFR1)
+              runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#auto-answer-latency
+
+  - name: Автоответы пропали - деградация RAG
+    interval: 1m
+    input_series:
+      - series: 'support_tickets_processed_total{action="A1",rule_id="R4",job="support-api",instance="api"}'
+        values: "0+0x90"
+      - series: 'support_tickets_processed_total{action="A2",rule_id="R6",job="support-api",instance="api"}'
+        values: "0+2x90"
+    alert_rule_test:
+      - eval_time: 60m
+        alertname: AutoAnswerShareLow
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+            exp_annotations:
+              summary: Доля автоответов ниже 5% за час - подозрение на деградацию RAG
+              runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#auto-answer-share
+      - eval_time: 60m
+        alertname: AutoAnswerShareHigh
+        exp_alerts: []
+
+  - name: Стоимость LLM на тикет выше NFR5
+    interval: 1h
+    input_series:
+      - series: 'support_llm_cost_rub_total{job="support-api",instance="api"}'
+        values: "0+20x30"
+      - series: 'support_tickets_processed_total{action="A1",rule_id="R4",job="support-api",instance="api"}'
+        values: "0+10x30"
+    alert_rule_test:
+      - eval_time: 24h
+        alertname: LlmCostPerTicketHigh
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+            exp_annotations:
+              summary: Средняя стоимость LLM на тикет за сутки выше порога NFR5
+              runbook_url: https://github.com/Vladee101/supporta/blob/master/docs/runbook.md#llm-cost
+
+  - name: Стоимость в пределах NFR5 - как в замере (0.1 ₽ на тикет)
+    interval: 1h
+    input_series:
+      - series: 'support_llm_cost_rub_total{job="support-api",instance="api"}'
+        values: "0+1x30"
+      - series: 'support_tickets_processed_total{action="A1",rule_id="R4",job="support-api",instance="api"}'
+        values: "0+10x30"
+    alert_rule_test:
+      - eval_time: 24h
+        alertname: LlmCostPerTicketHigh
+        exp_alerts: []

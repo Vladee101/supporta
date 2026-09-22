@@ -32,7 +32,9 @@ import pika.exceptions
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
 
+from app.core import tracing
 from app.core.config import get_settings
+from app.core.log_setup import configure_logging
 from app.db.base import get_session_factory
 from app.escalations.consumer import ConsumeResult, PoisonMessageError, handle_escalation_created
 from app.messaging.topology import NOTIFY_EXCHANGE, QUEUE, declare_topology
@@ -108,6 +110,9 @@ def _consume_on(
     def on_message(ch, method, properties, body: bytes) -> None:
         try:
             payload = json.loads(body)
+            # trace_id исходного запроса: строки лога consumer'а связываются
+            # с HTTP-запросом и записью audit_log (раздел «Наблюдаемость»).
+            tracing.set_trace_id(payload.get("trace_id") if isinstance(payload, dict) else None)
             with session_factory() as session:
                 result = handle_escalation_created(
                     session, idempotency_key=properties.message_id, payload=payload
@@ -153,7 +158,7 @@ def _consume_on(
 
 
 def main() -> None:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
+    configure_logging(get_settings().log_format)
     with contextlib.suppress(KeyboardInterrupt):
         run(get_session_factory(), get_settings().rabbitmq_url)
     log.info("stopped")

@@ -22,6 +22,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
+from app.core.log_setup import configure_logging
 from app.db.base import get_session_factory
 from app.messaging.outbox import DEFAULT_BATCH_SIZE, publish_pending
 from app.messaging.publisher import PikaPublisher
@@ -82,7 +83,7 @@ def main() -> None:
     parser.add_argument("--batch-size", type=int, default=DEFAULT_BATCH_SIZE)
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
+    configure_logging(get_settings().log_format)
     publisher = PikaPublisher(get_settings().rabbitmq_url)
     log.info("started, batch=%d, interval=%.1fs", args.batch_size, args.interval)
     try:

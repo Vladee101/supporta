@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
+from app.core import tracing
 from app.db.models import Escalation, OutboxEvent, Ticket
 from app.domain.enums import EscalationReason, EscalationStatus
 
@@ -30,6 +31,7 @@ def create_escalation(
     priority: int,
     category: str,
     draft_text: str | None = None,
+    trace_id: str | None = None,
 ) -> Escalation:
     escalation = Escalation(
         ticket_id=ticket.id,
@@ -57,6 +59,9 @@ def create_escalation(
                 "priority": priority,
                 "category": category,
                 "has_draft": draft_text is not None,
+                # Сквозной trace_id: по нему событие в RabbitMQ и строки логов
+                # consumer'а связываются с HTTP-запросом и записью audit_log.
+                "trace_id": trace_id or tracing.ensure_trace_id(),
             },
         )
     )

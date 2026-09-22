@@ -24,6 +24,7 @@ from datetime import UTC, datetime, timedelta
 from sqlalchemy.exc import OperationalError
 
 from app.core.config import get_settings
+from app.core.log_setup import configure_logging
 from app.db.base import get_session_factory
 from app.escalations.operations import release_expired
 from app.escalations.timeouts import escalate_clarification_timeouts
@@ -65,7 +66,7 @@ def main() -> None:
     parser.add_argument("--once", action="store_true", help="один проход и выход")
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
+    configure_logging(get_settings().log_format)
     backoff = Backoff()
     try:
         while True:

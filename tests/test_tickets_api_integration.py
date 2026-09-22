@@ -16,7 +16,7 @@ from app.agent.service import AgentService
 from app.core.auth import issue_ticket_token, issue_token, webhook_signature
 from app.core.config import get_settings
 from app.db.base import get_session
-from app.db.models import AuditLog, Escalation, Ticket
+from app.db.models import AuditLog, Escalation, OutboxEvent, Ticket
 from app.domain.decision import PRIORITY_CLIENT_REQUESTED, Thresholds
 from app.domain.enums import OperatorRole, TicketStatus
 from app.main import app
@@ -145,13 +145,43 @@ def test_llm_outage_escalates_instead_of_failing(client, db_session):
             raise LLMUnavailableError("provider down")
 
     app.dependency_overrides[get_agent_service] = lambda: BrokenAgent()
-    body = post_ticket(client, "Где мой заказ?").json()
+    response = post_ticket(client, "Где мой заказ?")
+    body = response.json()
 
     assert body["status"] == TicketStatus.ESCALATED_STANDARD
-    escalation = db_session.scalar(
-        select(Escalation).where(Escalation.ticket_id == uuid.UUID(body["ticket_id"]))
-    )
+    ticket_id = uuid.UUID(body["ticket_id"])
+    escalation = db_session.scalar(select(Escalation).where(Escalation.ticket_id == ticket_id))
     assert escalation.reason == "llm_unavailable"
+
+    # NFR3: решение трассируемо и без Decision Engine - запись в audit_log с trace_id запроса.
+    audit = db_session.scalar(select(AuditLog).where(AuditLog.ticket_id == ticket_id))
+    assert audit.rule_id == "NFR6"
+    assert audit.trace_id == response.headers["x-trace-id"]
+
+
+def test_trace_id_goes_from_http_request_to_audit_log_and_outbox_event(client, db_session):
+    """Раздел «Наблюдаемость»: один trace_id от запроса до события в RabbitMQ."""
+    trace_id = "0a1b2c3d4e5f60718293a4b5c6d7e8f9"
+    body = json.dumps(
+        {"channel": "web", "external_id": uuid.uuid4().hex, "content": "Требую вернуть деньги"},
+        ensure_ascii=False,
+    ).encode("utf-8")
+    response = client.post(
+        "/api/v1/tickets",
+        content=body,
+        headers={
+            "Content-Type": "application/json",
+            "X-Signature": webhook_signature(body, WEB_SECRET),
+            "X-Trace-Id": trace_id,
+        },
+    )
+    ticket_id = uuid.UUID(response.json()["ticket_id"])
+
+    assert response.headers["x-trace-id"] == trace_id
+    audit = db_session.scalar(select(AuditLog).where(AuditLog.ticket_id == ticket_id))
+    assert audit.trace_id == trace_id
+    event = db_session.scalar(select(OutboxEvent).where(OutboxEvent.ticket_id == ticket_id))
+    assert event.payload["trace_id"] == trace_id
 
 
 # --- NFR4: доступ к тикету ------------------------------------------------------
