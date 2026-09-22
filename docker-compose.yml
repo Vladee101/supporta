@@ -1,3 +1,23 @@
+# Разработка: docker compose up -d                        - Postgres и RabbitMQ, приложение на хосте.
+# Демо-стенд: docker compose --profile demo up -d --build  - всё в контейнерах, ссылка для входа:
+#             docker compose --profile demo logs demo
+# Метрики:    docker compose --profile observability up -d  - Prometheus на :9090.
+
+x-app: &app
+  build: .
+  image: supporta-app:latest
+  profiles: ["demo"]
+  environment: &app-env
+    DATABASE_URL: postgresql+psycopg://support:support@postgres:5432/support
+    RABBITMQ_URL: amqp://support:support@rabbitmq:5672/
+    # Стенд без ключей и без платных вызовов: словарный классификатор, шаблонные
+    # ответы, хеширующие векторы. Порог RAG - под их шкалу (см. «Confidence и пороги»).
+    LLM_PROVIDER: baseline
+    EMBEDDING_PROVIDER: hashing
+    RAG_CONFIDENCE_THRESHOLD: "0.15"
+    AUTH_SECRET: demo-stand-secret-not-for-production
+    LOG_FORMAT: json
+
 services:
   postgres:
     image: pgvector/pgvector:pg17
@@ -30,6 +50,80 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+
+  # --- демо-стенд (профиль demo) ---------------------------------------------
+  init:
+    <<: *app
+    # Миграции, база знаний и её индексация. Идемпотентно: повторный up ничего не ломает.
+    command: >-
+      sh -c "python -m alembic upgrade head
+      && python -m scripts.seed_kb
+      && python -m scripts.index_kb --provider hashing"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    <<: *app
+    environment:
+      <<: *app-env
+      WS_BRIDGE_ENABLED: "true"
+    ports:
+      - "${DEMO_PORT:-8000}:8000"
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  poller:
+    <<: *app
+    command: python -m app.workers.outbox_poller
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+
+  consumer:
+    <<: *app
+    command: python -m app.workers.escalation_consumer
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+
+  scheduler:
+    <<: *app
+    command: python -m app.workers.scheduler
+    depends_on:
+      init:
+        condition: service_completed_successfully
+
+  demo:
+    <<: *app
+    # Демо-обращения через публичный API (тот же путь, что у настоящего канала) и
+    # ссылка для входа в консоль под администратором. Постоянные external_id:
+    # повторный up не создаёт дубли - приём идемпотентен.
+    command: >-
+      sh -c "python -m scripts.demo_tickets --base-url http://api:8000 --stable-ids
+      && python -m scripts.issue_token --email demo@example.com --name Demo --role admin
+      --console-url http://localhost:${DEMO_PORT:-8000}/console"
+    depends_on:
+      api:
+        condition: service_healthy
+      poller:
+        condition: service_started
+      consumer:
+        condition: service_started
+    restart: "no"
 
   # SLI и алерты (раздел «Наблюдаемость», docs/runbook.md). Отдельный профиль:
   # docker compose --profile observability up -d  → http://localhost:9090

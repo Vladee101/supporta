@@ -11,6 +11,7 @@ export const REASON_LABELS: Record<string, string> = {
   clarification_timeout: "Клиент не ответил на уточнение",
   agent_timeout: "Таймаут агента",
   llm_unavailable: "LLM недоступен",
+  order_data_unavailable: "Нет доступа к данным заказа",
   decision_table_gap: "Дефект таблицы решений",
 };
 

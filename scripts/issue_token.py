@@ -28,6 +28,11 @@ def main() -> None:
     parser.add_argument("--email", required=True)
     parser.add_argument("--name", default=None)
     parser.add_argument("--role", choices=[role.value for role in OperatorRole], default="operator")
+    parser.add_argument(
+        "--console-url",
+        default=None,
+        help="напечатать ссылку для входа <url>#token=...: фрагмент не уходит на сервер",
+    )
     args = parser.parse_args()
 
     if get_settings().auth_secret == DEFAULT_SECRET:
@@ -43,7 +48,12 @@ def main() -> None:
 
         token = issue_token(operator.id, OperatorRole(operator.role))
 
-    print(token)
+    if args.console_url:
+        print()
+        print(f"консоль оператора: {args.console_url.rstrip('/')}/#token={token}")
+        print()
+    else:
+        print(token)
 
 
 if __name__ == "__main__":

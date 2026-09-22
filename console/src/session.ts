@@ -31,7 +31,26 @@ export function parseToken(token: string): Session | null {
   }
 }
 
+/**
+ * Вход по ссылке: `/console/#token=...` (так демо-стенд печатает ссылку для входа).
+ * Токен - во фрагменте, а не в query: фрагмент не уходит на сервер и не попадает
+ * в access-логи. Из адресной строки он сразу убирается.
+ */
+function takeTokenFromLocation(): Session | null {
+  const match = window.location.hash.match(/(?:^#|&)token=([^&]+)/);
+  if (!match) return null;
+  history.replaceState(null, "", window.location.pathname + window.location.search);
+  const session = parseToken(decodeURIComponent(match[1]));
+  if (session && session.expiresAt > new Date()) {
+    saveSession(session);
+    return session;
+  }
+  return null;
+}
+
 export function loadSession(): Session | null {
+  const fromLink = takeTokenFromLocation();
+  if (fromLink) return fromLink;
   try {
     const token = sessionStorage.getItem(STORAGE_KEY);
     const session = token ? parseToken(token) : null;

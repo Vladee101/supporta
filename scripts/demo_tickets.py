@@ -33,13 +33,20 @@ def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(description="Демо-обращения")
     parser.add_argument("--base-url", default="http://127.0.0.1:8000")
+    parser.add_argument(
+        "--stable-ids",
+        action="store_true",
+        help="постоянные external_id (demo-1..N): повторный запуск не плодит дубли - "
+        "приём идемпотентен по (channel, external_id)",
+    )
     args = parser.parse_args()
 
     secret = get_settings().channel_secrets["web"]
     with httpx.Client(base_url=args.base_url, timeout=30) as client:
-        for text in DEMO:
+        for index, text in enumerate(DEMO, start=1):
+            external_id = f"demo-{index}" if args.stable_ids else f"demo-{uuid.uuid4().hex[:12]}"
             body = json.dumps(
-                {"channel": "web", "external_id": f"demo-{uuid.uuid4().hex[:12]}", "content": text},
+                {"channel": "web", "external_id": external_id, "content": text},
                 ensure_ascii=False,
             ).encode("utf-8")
             response = client.post(
@@ -52,7 +59,7 @@ def main() -> None:
             )
             response.raise_for_status()
             result = response.json()
-            reply = f" → {result['reply'][:60]}…" if result["reply"] else ""
+            reply = f" → {result['reply'][:60]}…" if result.get("reply") else ""
             print(f"{result['status']:24} {text[:50]}{reply}")
 
 

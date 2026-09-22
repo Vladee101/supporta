@@ -130,6 +130,53 @@ jobs:
           docker run --rm --entrypoint promtool -v "$PWD/deploy/prometheus:/cfg" -w /cfg
           prom/prometheus:v3.5.0 test rules alerts_test.yml
 
+  demo:
+    # Обещание README «стенд одной командой» проверяется на чистой машине при
+    # каждом push: сборка образа, init, демо-тикеты, эскалации дошли до очереди.
+    runs-on: ubuntu-latest
+    env:
+      DEMO_PORT: "8000"
+    steps:
+      - uses: actions/checkout@v5
+      - name: Стенд с нуля
+        run: docker compose --profile demo up -d --build
+      - name: Инициализация и демо-тикеты завершились успешно
+        # Не `docker compose wait`: он не находит уже завершившиеся контейнеры.
+        run: |
+          for svc in init demo; do
+            for i in $(seq 1 60); do
+              id=$(docker compose --profile demo ps -a -q --status exited "$svc")
+              [ -n "$id" ] && break
+              sleep 2
+            done
+            code=$(docker inspect -f '{{.State.ExitCode}}' "$id")
+            echo "$svc: exit $code"
+            [ "$code" = "0" ]
+          done
+      - name: API отвечает, ссылка для входа напечатана
+        run: |
+          curl -fsS http://localhost:8000/health
+          docker compose --profile demo logs --no-log-prefix demo             | grep -o 'http://localhost:8000/console/#token=[^ ]*' > link.txt
+          test -s link.txt
+      - name: Эскалации в очереди консоли
+        run: |
+          token=$(sed 's/.*#token=//' link.txt)
+          count=$(curl -fsS -H "Authorization: Bearer $token" http://localhost:8000/api/v1/escalations             | python3 -c 'import sys, json; print(len(json.load(sys.stdin)["items"]))')
+          echo "в очереди: $count"; [ "$count" -ge 4 ]
+      - name: События прошли outbox → RabbitMQ → consumer
+        # Очередь консоли читается из Postgres и доставку не доказывает; запись в
+        # consumed_events создаёт только consumer, получивший сообщение из брокера.
+        run: |
+          for i in $(seq 1 30); do
+            consumed=$(docker compose exec -T postgres psql -U support -d support -tAc               "select count(*) from consumed_events")
+            [ "$consumed" -ge 4 ] && echo "обработано consumer'ом: $consumed" && exit 0
+            sleep 2
+          done
+          echo "consumer обработал только: $consumed"; exit 1
+      - name: Логи стенда при падении
+        if: failure()
+        run: docker compose --profile demo logs --no-color | tail -n 200
+
   console:
     runs-on: ubuntu-latest
     defaults:
